@@ -44,7 +44,7 @@ def Run(input_file = None):
     cimap_out = Output(s,muscles)
     # save of the output file
     _ = _outcsv(cimap_out,input_file)
-    cimap_pas = sPAsExtraction(cimap_out)
+    cimap_pas = PAsExtraction(cimap_out)
     print("CIMAP Algorithm application successfull")
     print("Graphical output generation")
     actplot(s)

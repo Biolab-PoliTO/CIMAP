@@ -6,7 +6,7 @@ f.close()
 
 setuptools.setup(
 	name = "CIMAP",
-	version = "0.0.8",
+	version = "0.0.10",
 	author = "Gregorio Dotti",
 	author_email = "gregorio.dotti@polito.it",
 	description = "A Python package for muscle activation pattern analysis",
