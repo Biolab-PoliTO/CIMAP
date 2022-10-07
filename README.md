@@ -5,7 +5,7 @@
  This result can also be elaborated for the identification of the principal activations (defined as those muscle activations that are strictly necessary to perform a specific task).
   The toolbox presented here provides a Python implementation of the CIMAP Algorithm with all the methods that allows to perform pattern analysis on muscle activation profiles.
  
- * **Documentation:** ...
+ * **Documentation:** [...](https://marcoghislieri.github.io/CIMAP/)
 
 ## Insights
 The current version includes the following functions:
