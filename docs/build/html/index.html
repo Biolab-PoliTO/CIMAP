@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CIMAP Algorithm Toolbox &mdash; CIMAP Algorithm 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/politologo.png"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data Requirements" href="data_requirements.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#">
+            <img src="_static/Biolab_Logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="data_requirements.html">Data Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CIMAP.html">CIMAP</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebook/CIMAP_tutorial.html">CIMAP Algorithm Application Example</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">CIMAP Algorithm</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>CIMAP Algorithm Toolbox</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="cimap-algorithm-toolbox">
+<h1>CIMAP Algorithm Toolbox<a class="headerlink" href="#cimap-algorithm-toolbox" title="Permalink to this heading"></a></h1>
+<blockquote>
+<div><p>The CIMAP (Clustering for Identification of Muscle Activation Patterns) algorithm is a method, based on agglomerative hierarchical clustering, developed for muscle activation pattern analysis during cyclical movements.
+What the algorithm does is group together cycles with a similar pattern of activation into clusters to identify common behavior in muscular activation.
+This result can also be elaborated for the identification of the principal activations (defined as those muscle activations that are strictly necessary to perform a specific task).</p>
+</div></blockquote>
+<section id="algorithm-workflow">
+<h2>Algorithm Workflow<a class="headerlink" href="#algorithm-workflow" title="Permalink to this heading"></a></h2>
+<blockquote>
+<div><p>CIMAP is an algorithm, based on Statistical Gait Analysis, that was developed and later optimized by Rosati et al. to perform pattern analysis on muscle activation profiles.
+The method address the problem of the high intra-subject variability that each subject has when performing a repetitive task.
+For the algorithm to work properly the cycles that are given as input to CIMAP has to be time-normalized to a fixed number of sample to remove the bias introduced
+by biological time differences in the performance of the task.</p>
+<p>The first step of the algorithm is the identification of the activation intervals edges to transform them into percentage values of the cycle. Then the cycles are divied by modality, i.e. the number of activation intervals whithin a cycle identify the modality (e.g., a cycles with n activation intervals is a n-modality cycle) to have higher homogeneity in the elaboration. After the division in modalities the clustering is performed on each modality separately, only on the modalities that present a sufficient number of cycles. The threshold Th on the minimum number of cycles per modality to perform clustering is set to Th = 10, as it was recently to showed to not influence significantly the results and allows the application to low number of cycles acquisitions (Dotti et al.). For each modality two dendrograms, one for each possible distance metric that are used, are built using the “complete” method (i.e., using the farthest distance between every pair of elements). Two distance metrics are used (Manhattan and Chebyshev) because during the optimization process was demostrated that neither perfomed significantly better than the other.
+Then, the number of clusters is chosen automatically based on the difference in distance of the merged clusters. Considering the difference of inter-cluster distance between consecutive iterations. Of the three cutoff points the best one is identified by finding the one that shows the best compromise between low intra-cluster variability and a high number of cycles included in the significant clusters (clusters with more than one element). After the choice of the best cutoff, the best clustering obtain from the two distance metrics is identified.
+The distance metrics is chosen as the one the shows the lowest mean similarity between the centroid and the cluster elements.
+Then, if selected, the results from clustering can be elaborated for the extraction of the principal activations. First, the significant clusters are identified as those clusters that contain more than 10% of the total number of cycles that were considered as significant in the previous elaboration. Subsequently the principal activations are extracted as the intersection of the activation intervals of the prototypes from the significant clusters.</p>
+</div></blockquote>
+<figure class="align-center">
+<a class="reference internal image-reference" href="_images/CIMAPworkflow.png"><img alt="_images/CIMAPworkflow.png" src="_images/CIMAPworkflow.png" style="width: 800px;" /></a>
+</figure>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="data_requirements.html">Data Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CIMAP.html">CIMAP</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebook/CIMAP_tutorial.html">CIMAP Algorithm Application Example</a></li>
+</ul>
+</div>
+</section>
+</section>
+<section id="references">
+<h1>References<a class="headerlink" href="#references" title="Permalink to this heading"></a></h1>
+<ol class="arabic simple">
+<li><ol class="upperalpha simple" start="19">
+<li><p>Rosati, V. Agostini, M. Knaflitz, and G. Balestra, “Muscle activation patterns during gait: A hierarchical clustering analysis,” Biomed. Signal Process. Control, vol. 31, pp. 463–469, 2017, doi: 10.1016/j.bspc.2016.09.017.</p></li>
+</ol>
+</li>
+<li><ol class="upperalpha simple" start="19">
+<li><p>Rosati, C. Castagneri, V. Agostini, M. Knaflitz, and G. Balestra, “Muscle contractions in cyclic movements: Optimization of CIMAP algorithm,” 2017, doi: 10.1109/EMBC.2017.8036762.</p></li>
+</ol>
+</li>
+<li><ol class="upperalpha simple" start="22">
+<li><p>Agostini, S. Rosati, C. Castagneri, G. Balestra, and M. Knaflitz, “Clustering analysis of EMG cyclic patterns: A validation study across multiple locomotion pathologies,” in 2017 IEEE International Instrumentation and Measurement Technology Conference (I2MTC), May 2017, pp. 1–5, doi: 10.1109/I2MTC.2017.7969746.</p></li>
+</ol>
+</li>
+<li><ol class="upperalpha simple" start="7">
+<li><p>Dotti, M. Ghislieri, S. Rosati, V. Agostini, M. Knaflitz, G. Balestra, (2021, November). The Effect of Number of Gait Cycles on Principal Activation Extraction. In Annual International Conference of the IEEE Engineering in Medicine and Biology Society. IEEE Engineering in Medicine and Biology Society. Annual International Conference (Vol. 2021, pp. 985-988)..</p></li>
+</ol>
+</li>
+</ol>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data_requirements.html" class="btn btn-neutral float-right" title="Data Requirements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Gregorio Dotti.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
