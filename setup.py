@@ -6,15 +6,17 @@ f.close()
 
 setuptools.setup(
 	name = "CIMAP",
-	version = "0.0.10",
+
+	version = "0.1.0",
+
 	author = "Gregorio Dotti",
 	author_email = "gregorio.dotti@polito.it",
 	description = "A Python package for muscle activation pattern analysis",
 	install_requires = [
-	'numpy>=1.23.2',
-	'matplotlib>=3.5.3',
-	'scipy>=0.17.1',
-	'seaborn>=0.9.1'
+	'numpy',
+	'matplotlib',
+	'scipy',
+	'seaborn'
 	],
 	packages = ["CIMAP"],
 	classifiers=[
@@ -22,6 +24,6 @@ setuptools.setup(
 	"License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.0', 
+    python_requires='>=3.8', 
 
 )

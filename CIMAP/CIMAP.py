@@ -645,7 +645,7 @@ def _outcsv(cimap_out,input_file, saving = True):
         ps = os.path.dirname(input_file)
         
         f = open(ps+"\\"+ os.path.splitext(os.path.basename(input_file))[0]+"_Output_CIMAP.csv", 'w')
-        writer = csv.writer(f)
+        writer = csv.writer(f,lineterminator='\r')
         writer.writerows(rows)
         f.close()
     return rows

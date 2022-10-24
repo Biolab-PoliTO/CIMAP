@@ -86,7 +86,7 @@ html_static_path = ['_static']
 html_favicon = '_static/politologo.png'
 
 # Add logo for project
-html_logo = '_static/Biolab_Logo.png'
+html_logo = '_static/Logo.png'
 html_theme_options = {
     'logo_only': True,
     'display_version': False,
