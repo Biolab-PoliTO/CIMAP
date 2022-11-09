@@ -4,3 +4,7 @@
 .wy-side-nav-search, .wy-nav-top {
     background: #ffffff;
 }
+table{
+    margin-left: auto;
+    margin-right: auto;
+}

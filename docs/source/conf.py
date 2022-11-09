@@ -72,16 +72,16 @@ pygments_style = 'default'
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
-html_show_sourcelink = (
-    False  # Remove 'view source code' from top of page (for html, not python)
-)
+html_show_sourcelink = False
 add_module_names = False
+
+html_static_path = ['_static']
  
 def setup(app):
     app.add_css_file('my_theme.css')
     
  
-html_static_path = ['_static']
+
 
 html_favicon = '_static/politologo.png'
 

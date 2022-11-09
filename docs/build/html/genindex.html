@@ -18,6 +18,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
@@ -43,11 +44,16 @@
               <p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="data_requirements.html">Data Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CIMAP.html">CIMAP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CIMAP.html">Algorithm functions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="notebook/CIMAP_tutorial.html">CIMAP Algorithm Application Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">CIMAP Application Example</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contribution.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
 
         </div>
@@ -63,8 +69,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Index</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Index</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -83,16 +89,17 @@
  | <a href="#F"><strong>F</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
- | <a href="#O"><strong>O</strong></a>
- | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
- | <a href="#T"><strong>T</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="CIMAP.html#CIMAP.CIMAP.actplot">actplot() (in module CIMAP.CIMAP)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="CIMAP.html#CIMAP.CIMAP.algorithm_output">algorithm_output() (in module CIMAP.CIMAP)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -111,7 +118,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="CIMAP.html#CIMAP.CIMAP.clustersplot">clustersplot() (in module CIMAP.CIMAP)</a>
 </li>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.Cuts">Cuts() (in module CIMAP.CIMAP)</a>
+      <li><a href="CIMAP.html#CIMAP.CIMAP.cuts">cuts() (in module CIMAP.CIMAP)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -119,10 +126,12 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.Dendrograms">Dendrograms() (in module CIMAP.CIMAP)</a>
+      <li><a href="CIMAP.html#CIMAP.CIMAP.data_reading">data_reading() (in module CIMAP.CIMAP)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="CIMAP.html#CIMAP.CIMAP.dendrograms">dendrograms() (in module CIMAP.CIMAP)</a>
+</li>
       <li><a href="CIMAP.html#CIMAP.CIMAP.dendroplot">dendroplot() (in module CIMAP.CIMAP)</a>
 </li>
   </ul></td>
@@ -131,7 +140,7 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.FindCuts">FindCuts() (in module CIMAP.CIMAP)</a>
+      <li><a href="CIMAP.html#CIMAP.CIMAP.findcuts">findcuts() (in module CIMAP.CIMAP)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -139,11 +148,7 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.Input">Input() (in module CIMAP.CIMAP)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.Intervals">Intervals() (in module CIMAP.CIMAP)</a>
+      <li><a href="CIMAP.html#CIMAP.CIMAP.intervals">intervals() (in module CIMAP.CIMAP)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -153,7 +158,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="CIMAP.html#CIMAP.CIMAP.modality_distribution">modality_distribution() (in module CIMAP.CIMAP)</a>
 </li>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.ModalityDivision">ModalityDivision() (in module CIMAP.CIMAP)</a>
+      <li><a href="CIMAP.html#CIMAP.CIMAP.modalitydivision">modalitydivision() (in module CIMAP.CIMAP)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -167,42 +172,16 @@
   </ul></td>
 </tr></table>
 
-<h2 id="O">O</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.Output">Output() (in module CIMAP.CIMAP)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="P">P</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.PAsActivationsPlot">PAsActivationsPlot() (in module CIMAP.CIMAP)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.PAsExtraction">PAsExtraction() (in module CIMAP.CIMAP)</a>
-</li>
-  </ul></td>
-</tr></table>
-
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.RemoveAddints">RemoveAddints() (in module CIMAP.CIMAP)</a>
+      <li><a href="CIMAP.html#CIMAP.CIMAP.removeaddints">removeaddints() (in module CIMAP.CIMAP)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.Run">Run() (in module CIMAP.CIMAP)</a>
+      <li><a href="CIMAP.html#CIMAP.CIMAP.resultsaver">resultsaver() (in module CIMAP.CIMAP)</a>
 </li>
-  </ul></td>
-</tr></table>
-
-<h2 id="T">T</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="CIMAP.html#CIMAP.CIMAP.targetgraph">targetgraph() (in module CIMAP.CIMAP)</a>
+      <li><a href="CIMAP.html#CIMAP.CIMAP.run_algorithm">run_algorithm() (in module CIMAP.CIMAP)</a>
 </li>
   </ul></td>
 </tr></table>
