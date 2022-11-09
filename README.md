@@ -27,7 +27,7 @@ CIMAP is a Python algorithm based on agglomerative hierarchical clustering that 
 6.	Data saving (clustering results are saved in an easy-to-read and open-source format).
 
 
- <img width="800" src="https://github.com/marcoghislieri/CIMAP/tree/main/docs/source/_static/CIMAPworkflow.png">
+ <img  src="https://github.com/marcoghislieri/CIMAP/tree/main/docs/source/_static/CIMAPworkflow.png" style="height: 100px; width:100px;"/>
  
  ## Prerequisites
  CIMAP is run within a Python environment and dependent on a variety of libraries, most of which are contained within the installation of Python.
