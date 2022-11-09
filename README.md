@@ -32,10 +32,12 @@ CIMAP is a Python algorithm based on agglomerative hierarchical clustering that 
  ## Prerequisites
  CIMAP is run within a Python environment and dependent on a variety of libraries, most of which are contained within the installation of Python.
  Besides those libraries CIMAP relies on:
+ 
  >matplotlib>=3.5.3 <br />
  >numpy>=1.23.2 <br />
  >scipy>=1.9.1 <br /> 
  >seaborn>=0.12.0 <br /> 
+ 
  All the necessary libraries will be installed during the installation procedure, that will be explained in the following section.
  
  ## Availability
