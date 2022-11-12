@@ -26,9 +26,6 @@ Done! ```CIMAP``` is now correctly installed on your computer and ready to be us
 ## Documentation
 Detailed information on data requirements and algorithm functions can be found on [GitHub](https://marcoghislieri.github.io/CIMAP/index.html). Moreover, a complete ``CIMAP``application example is provided.
 
-## How to contribute to ``CIMAP``
-Thank you for your interest in our algorithm and for taking the time to read this document. Please refer to the [Contributing]( https://marcoghislieri.github.io/CIMAP/contribution.html) section for a complete guide on how to contribute to this algorithm.
-
 ## References
 If you use ``CIMAP`` algorithm in your work, please cite the following two articles:
 
@@ -38,6 +35,9 @@ If you use ``CIMAP`` algorithm in your work, please cite the following two artic
 
 ## Acknoledgments
 The authors are grateful to (in alphabetical order): [Prof. Valentina Agostini](https://www.det.polito.it/personale/scheda/(nominativo)/valentina.agostini), Dr. Cristina Castagneri, and [Prof. Marco Knaflitz](https://www.det.polito.it/it/personale/scheda/(nominativo)/marco.knaflitz) for their contributions to the development and validation of this approach.
+
+## How to contribute to ``CIMAP``
+Thank you for your interest in our algorithm and for taking the time to read this document. Please refer to the [Contributing]( https://marcoghislieri.github.io/CIMAP/contribution.html) section for a complete guide on how to contribute to this algorithm.
 
 ## Disclaimer
 This algorithm is provided as-is, and there are no guarantees that it fits your purposes or that it is bug-free.
