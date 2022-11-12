@@ -29,7 +29,7 @@ Detailed information on data requirements and algorithm functions can be found o
 ## How to contribute to ``CIMAP``
 Thank you for your interest in our algorithm and for taking the time to read this document. Please refer to the [Contributing]( https://marcoghislieri.github.io/CIMAP/contribution.html) section for a complete guide on how to contribute to this algorithm.
 
-## Please cite these papers
+## References
 If you use ``CIMAP`` algorithm in your work, please cite the following two articles:
 
 - S. Rosati, V. Agostini, M. Knaflitz, and G. Balestra, “Muscle activation patterns during gait: A hierarchical clustering analysis,” Biomed. Signal Process. Control, vol. 31, pp. 463–469, 2017, doi: [10.1016/j.bspc.2016.09.017](https://doi.org/10.1016/j.bspc.2016.09.017).
