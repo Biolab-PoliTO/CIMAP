@@ -24,7 +24,7 @@ Done! ```CIMAP``` is now correctly installed on your computer and ready to be us
 <img  src="https://github.com/marcoghislieri/CIMAP/blob/main/docs/_static/CIMAPworkflow.png"/>
 
 ## Documentation
-Detailed information on data requirements and algorithm functions can be found on [GitHub](https://marcoghislieri.github.io/CIMAP/index.html). Moreover, a complete ``CIMAP``application example is provided.
+Detailed information on data requirements and algorithm functions can be found on the [Documentation](https://marcoghislieri.github.io/CIMAP/index.html) page. Moreover, a complete ``CIMAP``application example is provided.
 
 ## References
 If you use ``CIMAP`` algorithm in your work, please cite the following two articles:
