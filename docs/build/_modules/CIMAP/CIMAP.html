@@ -48,7 +48,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../example.html">CIMAP Application Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../example.html">Applying CIMAP to gait analysis</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">About:</span></p>
 <ul>
@@ -268,7 +268,7 @@
         <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="n">side_out</span><span class="p">,</span>
         <span class="s2">&quot;pos&quot;</span><span class="p">:</span><span class="n">pos</span>        
     <span class="p">}</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input dataset loaded successfully&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input dataset loaded successfully!&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">s</span><span class="p">,</span><span class="n">muscles</span> </div>
 
 <span class="k">def</span> <span class="nf">_csv2dict</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
@@ -397,7 +397,7 @@
                     <span class="n">cyc_out</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">ins</span><span class="p">[</span><span class="n">p</span><span class="p">]):</span><span class="nb">int</span><span class="p">(</span><span class="n">ins</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
                     
         <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">][</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">cyc_out</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interval and outliers removal performed&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pre-processing successfully performed!&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">s</span></div>
 
 
@@ -447,7 +447,7 @@
             <span class="n">mods</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">))</span>
         <span class="n">modalities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mods</span><span class="p">)</span>
     <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">modalities</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cycles successfully divided into modalities&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cycles successfully divided into modalities!&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">muscles</span></div>
 
 <div class="viewcode-block" id="dendrograms"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.dendrograms">[docs]</a><span class="k">def</span> <span class="nf">dendrograms</span><span class="p">(</span><span class="n">muscles</span><span class="p">):</span>
@@ -716,7 +716,7 @@
             <span class="s2">&quot;clusters&quot;</span><span class="p">:</span> <span class="n">clustering</span><span class="p">,</span>
             <span class="s2">&quot;non_significant&quot;</span><span class="p">:</span><span class="n">non_significant</span>        
        <span class="p">}</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Output dictionary created, use resultsaver to save the data in .csv format&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Output dictionary created&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cimap_out</span></div>
 
 <div class="viewcode-block" id="resultsaver"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.resultsaver">[docs]</a><span class="k">def</span> <span class="nf">resultsaver</span><span class="p">(</span><span class="n">cimap_out</span><span class="p">,</span><span class="n">input_file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">saving</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
@@ -767,7 +767,7 @@
         <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">lineterminator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Results saved&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Results saved!&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">rows</span></div>
 
