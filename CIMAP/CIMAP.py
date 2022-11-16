@@ -367,7 +367,7 @@ def modalitydivision(s,muscles):
         for n in range(int(max(acts[:,-1])+1)):
             if any(acts[:,-1]==n):
                 ins = np.vstack((intr[acts[:,-1]==n]))
-                ins = np.hstack((ins,acts[acts[:,-1]==n,:]))
+                ins = np.hstack((ins,acts[acts[:,-1]==n,:-1]))
             else:
                 ins = np.array([])
             mods.append(np.array(ins, dtype=np.float))
