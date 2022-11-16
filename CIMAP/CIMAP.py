@@ -107,7 +107,7 @@ def intervals(cycles):
                 
 
          num.append(nact)
-         out.append(np.array(interval)+1) 
+         out.append(np.array(interval)+1)
      out = np.array(out, dtype = object)*100/(len(g)+1) 
      num = np.array(num) 
      idx = np.arange(np.size(cycles,0))+1
@@ -351,20 +351,23 @@ def modalitydivision(s,muscles):
             # calculation of the number of activation intervals and of the
             # intervals ends
              inters,nact,idx = intervals(c)
-             sd = np.zeros((inters.size))+side[i][k]
+             sd = np.zeros(len(nact))+side[i][k]
 
              if flag == 0:
-                acts = np.vstack((inters,idx,sd,nact)).T
+                intr = inters
+                acts = np.vstack((idx,sd,nact)).T
                 flag = 1
              else:
-                ins = np.vstack((inters,idx,sd,nact)).T
-                acts = np.vstack((acts,ins))
+                intr = np.hstack((intr,inters))
+                a_ins = np.vstack((idx,sd,nact)).T
+                acts = np.vstack((acts,a_ins))
+
         mods = []
         # sorting of the modalities
-        for n in range(int(max(acts[:,3])+1)):
-            if any(acts[:,3]==n):
-                ins = np.vstack((acts[acts[:,3]==n,0]))
-                ins = np.hstack((ins,acts[acts[:,3]==n,1:-1]))
+        for n in range(int(max(acts[:,-1])+1)):
+            if any(acts[:,-1]==n):
+                ins = np.vstack((intr[acts[:,-1]==n]))
+                ins = np.hstack((ins,acts[acts[:,-1]==n,:]))
             else:
                 ins = np.array([])
             mods.append(np.array(ins, dtype=np.float))
