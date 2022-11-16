@@ -256,8 +256,8 @@ def removeaddints(s):
         # removal of the always OFF cycles
         if np.count_nonzero(nact==0):
             print("Full off cycles removed: %s" % np.count_nonzero(nact==0))
-            cycles = np.delete(cycles,nact==0)
-            nact = np.delete(nact,nact==0)
+            cycles = np.delete(cycles,nact==0,axis = 0)
+            nact = np.delete(nact,nact==0,axis = 0)
         
     
         # process of the identification of the always ON cycles and removal
@@ -305,8 +305,8 @@ def removeaddints(s):
         # removal of always ON cycles
 
         if bool(fullon):
-            cycles = np.delete(cycles,fullon)
-            nact = np.delete(nact,fullon)
+            cycles = np.delete(cycles,fullon,axis = 0)
+            nact = np.delete(nact,fullon,axis = 0)
 
         if bool(fullon):
             print("Full on cycles removed: %s" % len(fullon))
@@ -572,6 +572,7 @@ def algorithm_output(s,muscles):
     for i,lbl in enumerate(muscles["name"]):
         for k,sd in enumerate(muscles["side"][i]):
             clusters = []
+            ns = []
             # flag for the first creation of the non significant np.array
             flag = 0
             if sd == 0:
@@ -633,9 +634,12 @@ def algorithm_output(s,muscles):
                         clusters.append([])
                 else:
                     clusters.append([])
+
             clustering.append(clusters)
             if flag == 1:
              non_significant.append([ns,ns_idx])
+            else:
+            	non_significant.append([ns,[]])
             labels.append(lb)
     cimap_out = {
            "name": labels,
@@ -801,7 +805,8 @@ def dendroplot(muscles,target = 'All'):
             if len(dendro):
                 count +=1
         fig,axes = plt.subplots(count,1)
-        count = 0
+ 
+        cont = 0
         for j,dendro in enumerate(dens):
             if len(dendro):
                 
