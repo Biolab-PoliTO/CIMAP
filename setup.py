@@ -7,7 +7,7 @@ f.close()
 setuptools.setup(
 	name = "CIMAP",
 
-	version = "0.1.4",
+	version = "1.0.6",
 
 	author = "Gregorio Dotti",
 	author_email = "gregorio.dotti@polito.it",

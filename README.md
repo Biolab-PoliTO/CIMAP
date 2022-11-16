@@ -21,7 +21,7 @@ Done! ```CIMAP``` is now correctly installed on your computer and ready to be us
 4.	Clusters' representation (available also at points 3 and 4)
 5.	Data saving (clustering results are saved in an easy-to-read and open-source format)
 
-<img  src="https://github.com/marcoghislieri/CIMAP/blob/main/docs/_static/CIMAPworkflow.png"/>
+<img  src="https://github.com/marcoghislieri/CIMAP/blob/main/docs/source/_static/CIMAPworkflow.png"/>
 
 ## Documentation
 Detailed information on data requirements and algorithm functions can be found on the [Documentation](https://marcoghislieri.github.io/CIMAP/index.html) page. Moreover, a complete ``CIMAP``application example is provided.
