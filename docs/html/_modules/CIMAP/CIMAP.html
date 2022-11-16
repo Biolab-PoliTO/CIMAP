@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CIMAP.CIMAP &mdash; CIMAP Algorithm 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/politologo.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html">
+            <img src="../../_static/Logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../data_requirements.html">Data Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CIMAP.html">Algorithm functions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../example.html">Applying CIMAP to gait analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contribution.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CIMAP Algorithm</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">CIMAP.CIMAP</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for CIMAP.CIMAP</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span><span class="o">,</span> <span class="nn">csv</span><span class="o">,</span><span class="nn">os</span><span class="o">,</span> <span class="nn">tkinter</span><span class="o">,</span> <span class="nn">tkinter.filedialog</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.cluster.hierarchy</span> <span class="kn">import</span> <span class="n">linkage</span><span class="p">,</span> <span class="n">fcluster</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">pdist</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">distance_matrix</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">from</span> <span class="nn">scipy.cluster</span> <span class="kn">import</span> <span class="n">hierarchy</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
+
+<div class="viewcode-block" id="run_algorithm"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.run_algorithm">[docs]</a><span class="k">def</span> <span class="nf">run_algorithm</span><span class="p">(</span><span class="n">input_file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Function for the application of CIMAP to a dataset. This function when used applies all the methods of the algorithm to the data in the *input_file*.</span>
+
+<span class="sd">        :Input: * **input_file** (*string*): None (*default*), a string containing the path of the *.csv* file that contains the input data for the application of CIMAP. In case no input_file is given the system opens a window that allows the user to search and select manually the file to use as input.</span>
+
+<span class="sd">        :Output: * **output_file**: the method automatically generates a *.csv* file in the same position of the input file containing the results of the application of the CIMAP. Refer to the **Data Requirements** section of the documentation for the detail on the output format of the data.</span>
+<span class="sd">                 * **graphics**:  all the graphs related to the CIMAP Algorithm application are given as output to the user.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># in case no input_file is given</span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Please choose the input file&quot;</span><span class="p">)</span>
+        <span class="c1"># creation of the UI</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="s2">&quot;-topmost&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">root</span><span class="o">.</span><span class="n">withdraw</span><span class="p">()</span>
+
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">filedialog</span><span class="o">.</span><span class="n">askopenfilename</span><span class="p">(</span><span class="n">parent</span> <span class="o">=</span> <span class="n">root</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Select Input File&quot;</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+    <span class="c1"># Reading of the data</span>
+    <span class="n">s</span><span class="p">,</span><span class="n">muscles</span> <span class="o">=</span> <span class="n">data_reading</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+    <span class="c1"># Removal of short intervals and fullon/fulloff cycles</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">removeaddints</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="c1">#division in modalities</span>
+    <span class="n">muscles</span> <span class="o">=</span> <span class="n">modalitydivision</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">muscles</span><span class="p">)</span>
+    <span class="c1"># construction of the dendrograms</span>
+    <span class="n">muscles</span> <span class="o">=</span> <span class="n">dendrograms</span><span class="p">(</span><span class="n">muscles</span><span class="p">)</span>
+    <span class="c1"># cut of the dendrogram and choice of the best clustering</span>
+    <span class="n">muscles</span> <span class="o">=</span> <span class="n">cuts</span><span class="p">(</span><span class="n">muscles</span><span class="p">)</span>
+    <span class="c1"># output of the CIMAP</span>
+    <span class="n">cimap_out</span> <span class="o">=</span> <span class="n">algorithm_output</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">muscles</span><span class="p">)</span>
+    <span class="c1"># save of the output file</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">resultsaver</span><span class="p">(</span><span class="n">cimap_out</span><span class="p">,</span><span class="n">input_file</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CIMAP Algorithm application successfull&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Graphical output generation&quot;</span><span class="p">)</span>
+    <span class="n">actplot</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">modality_distribution</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">dendroplot</span><span class="p">(</span><span class="n">muscles</span><span class="p">)</span>
+    <span class="n">clustersplot</span><span class="p">(</span><span class="n">cimap_out</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">color</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CIMAP graphical data produced&quot;</span><span class="p">)</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="intervals"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.intervals">[docs]</a><span class="k">def</span> <span class="nf">intervals</span><span class="p">(</span><span class="n">cycles</span><span class="p">):</span>
+     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">     Function for the extraction of the percentage value related to the activation intervals starting and ending point. This function is used in the pre-processing of the data for the extraction of the information necessary for the subsequent clustering steps. Also, the function returns the number of activation intervals in the cycle and the row where the cycle is put inside the &quot;cycles&quot; matrix. The row is used to mantain the sequence information of the cycles. </span>
+
+<span class="sd">      :Input: * **cycles** (*numpyarray*): a numpy binary array whose rows represents the gait cycles and the columns represent the samples of the normalised cycle. It is important that the cycles are normalised all at the same value, in our case 1000 time samples.</span>
+
+<span class="sd">      :Output: * **out** (*list*): a list containing numpy arrays which contain the percentage value of the starting and ending point of the activation intervals (e.g., out[n] = [ON1,OFF1,...,ONn, OFFm])</span>
+<span class="sd">             * **num** (*numpyarray*): a numpy array that contains the number of activation intervals of the activation interval stored in **out**</span>
+<span class="sd">             * **idx** (*numpyarray*): a numpy array that contains the sequentail number that matches the cycles stored in **out**</span>
+<span class="sd">         &#39;&#39;&#39;</span>
+      <span class="c1"># check for the correct format of the input variable</span>
+      <span class="c1"># check for the correct format of the input variable</span>
+    
+     <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cycles</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be a numpy array&#39;</span><span class="p">)</span>
+     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cycles</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be an array of 2 dimensions&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># check whether the activation values are binary</span>
+     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">cycles</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">cycles</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+         <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s1">&#39;Wrong Activation values&#39;</span><span class="p">)</span>
+    
+        <span class="c1"># identificattion of the transitions</span>
+     <span class="n">gap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">cycles</span><span class="p">)</span>
+     <span class="n">out</span><span class="p">,</span> <span class="n">num</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+
+     
+     <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gap</span><span class="p">):</span>
+        <span class="c1"># extration of the sample of the transition</span>
+         <span class="n">interval</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">!=</span><span class="mi">0</span><span class="p">]</span>
+         <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">interval</span><span class="p">):</span>
+            <span class="c1"># if the first transition is -1 the activation starts at 0</span>
+            <span class="k">if</span> <span class="n">g</span><span class="p">[</span><span class="n">interval</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">interval</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># if the last transition is 1 the activation ends at 100</span>
+            <span class="k">if</span> <span class="n">g</span><span class="p">[</span><span class="n">interval</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">interval</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
+            <span class="n">nact</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+         <span class="k">elif</span> <span class="n">cycles</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># always active cycle</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">nact</span> <span class="o">=</span> <span class="mi">1</span>
+         <span class="k">else</span><span class="p">:</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">nact</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># adding 1 to have the right percentage value</span>
+         <span class="k">for</span> <span class="n">jj</span><span class="p">,</span><span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">interval</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">))</span> <span class="ow">and</span> <span class="n">g</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">interval</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">+=</span><span class="mi">1</span>
+                
+
+         <span class="n">num</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nact</span><span class="p">)</span>
+         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> 
+     <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="nb">object</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> 
+     <span class="n">num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">num</span><span class="p">)</span> 
+     <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">cycles</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span>
+     
+     <span class="k">return</span> <span class="n">out</span><span class="p">,</span><span class="n">num</span><span class="p">,</span><span class="n">idx</span></div>
+
+<div class="viewcode-block" id="data_reading"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.data_reading">[docs]</a><span class="k">def</span> <span class="nf">data_reading</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Function that takes the input of CIMAP and prepares the data structures for the application of CIMAP Algorithm.</span>
+<span class="sd">    </span>
+<span class="sd">    :Input: * **input_file** (*string*): a string containing the path of the *.csv* file that contains the input data for the application of CIMAP. Be sure that the input data respects the requirements set in the Data Requirements section of the documentation.</span>
+<span class="sd">    </span>
+<span class="sd">    :Output: * **s** (*dict*): data structure of CIMAP that is used for the application of the methods of the algorithm.</span>
+<span class="sd">             * **muscles** (*dict*): dictionary containing the information about the data that is given as input to CIMAP. Specifically the muscles, if the acquisition is bilateral and the position where to retrieve the cycles.&#39;&#39;&#39;</span>
+    
+    <span class="c1"># Application of the ausiliary method that reads the data from the *.csv* file and transforms it into the dictionary that is used in the following methods.</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">_csv2dict</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+
+
+    <span class="c1"># check that the field &quot;Cycles&quot; exists and is corectly labeled</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">keys_l</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;cycles&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;Cycles&quot; key of dictionary not found, check the input dictionary&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;Cycles&quot;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;cycles&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cycles&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39; &quot;Cycles&quot; field format wrong, corrected&#39;</span><span class="p">)</span>
+
+        
+    <span class="c1"># check that the field &quot;Labels&quot; exists and is corectly labeled </span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;Labels&quot; key of dictionary not found, check the input dictionary&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;Labels&quot;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Labels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39; &quot;Labels&quot; field format wrong, corrected&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># check for the correct format of the input variable  </span>
+    <span class="k">for</span> <span class="n">cyc</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be a numpy array&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cyc</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be an array of 2 dimensions&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cyc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be normalized to 1000 samples&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># extraction of the labels of the muscles acquired</span>
+    <span class="n">mslnames</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="n">side</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">lbl</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Labels&quot;</span><span class="p">]:</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;L&quot;</span><span class="p">):</span>
+            <span class="n">side</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">side</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]),</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;R&quot;</span><span class="p">):</span>
+            <span class="n">side</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">side</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong label format&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lbl</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span><span class="p">:</span>
+            <span class="n">mslnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mslnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c1"># identification of the position inside the labels list where the muscles are</span>
+    <span class="c1"># positioned and which side or sides are in the input list. This is made for</span>
+    <span class="c1"># following procedures inside CIMAP algorithm</span>
+    <span class="n">msl_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mslnames</span><span class="p">)</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">x1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">msl_list</span><span class="p">):</span>
+         <span class="n">pos</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mslnames</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">x1</span><span class="p">])</span>
+         <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+    <span class="n">side_out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">pos</span><span class="p">:</span>
+        <span class="n">side_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">side</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+        
+    <span class="n">muscles</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">names</span><span class="p">,</span>
+        <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="n">side_out</span><span class="p">,</span>
+        <span class="s2">&quot;pos&quot;</span><span class="p">:</span><span class="n">pos</span>        
+    <span class="p">}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input dataset loaded successfully!&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">,</span><span class="n">muscles</span> </div>
+
+<span class="k">def</span> <span class="nf">_csv2dict</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Ausiliary function that opens and reads the contents of the *.csv* file and rearranges it for the application of CIMAP &#39;&#39;&#39;</span>
+    <span class="n">labels</span><span class="p">,</span><span class="n">cycles</span> <span class="o">=</span> <span class="p">[],[]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">csvreader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csvreader</span><span class="p">:</span>
+            <span class="c1"># checking that we are importing muscle data and not the header of the file</span>
+            <span class="k">if</span> <span class="s1">&#39;_R&#39;</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="s1">&#39;_L&#39;</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+                <span class="c1"># checking that all the activation values are 0 or 1 and not other values. NaNs are removed in case a different number of cycles is given as input from the tabular data</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">row</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">row</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s1">&#39;Wrong Activation values&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">1000</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;csv input file has a wrong number of columns, check that the cycles are normalized to 1000 samples&#39;</span><span class="p">)</span>
+                <span class="n">cycles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">1000</span><span class="p">),</span><span class="mi">1000</span><span class="p">)))</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Labels&quot;</span><span class="p">:</span><span class="n">labels</span><span class="p">,</span>
+        <span class="s2">&quot;Cycles&quot;</span><span class="p">:</span><span class="n">cycles</span>
+    <span class="p">}</span>
+    <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+<div class="viewcode-block" id="removeaddints"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.removeaddints">[docs]</a><span class="k">def</span> <span class="nf">removeaddints</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function for the identification and removal of full active, full non-active cycles as this cycles are identified as outliers. The function also removes the activation intervals and small gaps that are smaller than 3% of the cycles as it was demonstrated in  `[1]`_ that such length in the activation is ininfluent on the biomechanics of the task and so they represent noise.</span>
+
+<span class="sd">    .. _[1]: https://doi.org/10.1109/10.661154</span>
+<span class="sd">    </span>
+<span class="sd">    :Input: * **s** (*dict*): the dictionary containing the cycles activation data created by the Input function from the *.csv* file.</span>
+
+<span class="sd">    :Output: * **s** (*dict*): same as the dictionary in input modified with the removal of the small gaps and of the always on/off cycles.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check that the field &quot;Cycles&quot; exists and is corectly labeled </span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">keys_l</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">&quot;cycles&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;Cycles&quot; key of dictionary not found, check the input dictionary &quot;s&quot;&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;Cycles&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span> <span class="ow">and</span> <span class="s2">&quot;cycles&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cycles&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;&quot;Cycles&quot; field format wrong, corrected&#39;</span><span class="p">)</span>
+        
+        
+    <span class="c1"># check for the correct format of the input variable</span>
+    <span class="k">for</span> <span class="n">cyc</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be a numpy array&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cyc</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be a numpy array of 2 dimensions&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cyc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be normalized to 1000 samples&#39;</span><span class="p">)</span>
+    
+    <span class="n">smallValue</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="k">for</span> <span class="n">f</span><span class="p">,</span><span class="n">cyc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]):</span>
+        <span class="c1"># extraction of the activation intervals for each cycle</span>
+        <span class="n">cycles</span><span class="p">,</span><span class="n">nact</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">intervals</span><span class="p">(</span><span class="n">cyc</span><span class="p">)</span>
+        
+        <span class="c1"># removal of the always OFF cycles</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">nact</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Full off cycles removed: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">nact</span><span class="o">==</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">cycles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">cycles</span><span class="p">,</span><span class="n">nact</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">nact</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">nact</span><span class="p">,</span><span class="n">nact</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
+        
+    
+        <span class="c1"># process of the identification of the always ON cycles and removal</span>
+        <span class="c1"># of the small gaps and activation intervals</span>
+        <span class="n">fullon</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cycles</span><span class="p">):</span>
+            <span class="n">ints</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="c1"># identification of the small gaps and intervals</span>
+            <span class="c1"># position of the gaps/ints to remove</span>
+            <span class="n">rem</span> <span class="o">=</span> <span class="n">ints</span><span class="o">&lt;=</span><span class="n">smallValue</span> <span class="c1"># 3% defined as the value under which an activation is considered non-sufficient for motion purpose</span>
+            <span class="c1"># gap of interval that is placed ant the star or at the end of the cycle</span>
+            <span class="c1"># is never removed because the information from the previous cycle is not given</span>
+            
+            <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.1</span><span class="p">:</span>
+                <span class="n">rem</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            
+            <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
+                <span class="n">rem</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="c1"># iterative removal checking whether the removal creates new removable gaps/ints    </span>
+            <span class="k">while</span> <span class="nb">any</span><span class="p">(</span><span class="n">rem</span><span class="p">):</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rem</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">rem</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="ow">and</span> <span class="n">j</span><span class="o">%</span><span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">idx</span><span class="p">)</span>
+                <span class="n">ints</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="n">rem</span> <span class="o">=</span> <span class="n">ints</span><span class="o">&lt;=</span><span class="n">smallValue</span>
+                <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.1</span><span class="p">:</span>
+                    <span class="n">rem</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                
+                <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
+                    <span class="n">rem</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rem</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">rem</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="ow">and</span> <span class="n">j</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">idx</span><span class="p">)</span>
+            <span class="c1"># check and save of the always ON cycles, performed later because</span>
+            <span class="c1"># the smallValue removal can cause the creation of always on cycles</span>
+            <span class="n">ints</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ints</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span><span class="o">&gt;</span><span class="mi">99</span><span class="p">:</span>
+                <span class="n">fullon</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">cycles</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span>
+            <span class="n">nact</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        <span class="c1"># removal of always ON cycles</span>
+
+        <span class="n">cycles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">cycles</span><span class="p">,</span><span class="n">fullon</span><span class="p">)</span>
+        <span class="n">nact</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">nact</span><span class="p">,</span><span class="n">fullon</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">fullon</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Full on cycles removed: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">fullon</span><span class="p">))</span>
+        <span class="c1"># Recreation of the cycles as binary arrays to be stored in s[&quot;Cycles] again</span>
+        <span class="n">cyc_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">cyc</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">ins</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cycles</span><span class="p">):</span>
+            <span class="n">ins</span> <span class="o">=</span> <span class="n">ins</span><span class="o">*</span><span class="n">cyc_out</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span>
+            <span class="n">ins</span> <span class="o">-=</span><span class="mi">1</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ins</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">cyc_out</span><span class="p">[</span><span class="n">k</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">ins</span><span class="p">[</span><span class="n">p</span><span class="p">]):</span><span class="nb">int</span><span class="p">(</span><span class="n">ins</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    
+        <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">][</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">cyc_out</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pre-processing successfully performed!&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span></div>
+
+
+<div class="viewcode-block" id="modalitydivision"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.modalitydivision">[docs]</a><span class="k">def</span> <span class="nf">modalitydivision</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">muscles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function for the division of the gait cycles in the different modalities before clustering. The function uses the function intervals to retrieve the activation intervals and then it divides them inside a list in muscles where the index identifies the number of activation intervals of the modality (0 always empty).</span>
+<span class="sd">    </span>
+<span class="sd">    :Input: * **s** (*dict*): the dictionary containing the cycles activation data created by the Input function from the *.csv* file.</span>
+<span class="sd">            * **muscles** (*dict*): dictionary obtained as output of CIMAP_input.</span>
+<span class="sd">    :Output: * **muscles** (*dict*): dictionary that contains the cycles divided by modality represented by the value of edges of the activation intervals translated as percentage of the cycle values.&quot;&quot;&quot;</span>
+    <span class="c1"># check for &quot;side&quot; and &quot;pos&quot; fields so that the input is correct</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">muscles</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s2">&quot;side&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;side&quot; key of muscles not found, check &quot;muscles&quot; dictionary&#39;</span>
+                         <span class="s1">&#39;be sure to run CIMAP_input first&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;pos&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;pos&quot; key of muscles not found, check &quot;muscles&quot; dictionary&#39;</span>
+                         <span class="s1">&#39;be sure to run CIMAP_input first&#39;</span><span class="p">)</span>    
+    <span class="c1"># retrieve of the information to get the cycles</span>
+    <span class="n">side</span> <span class="o">=</span> <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;side&quot;</span><span class="p">]</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">]</span>
+    <span class="n">modalities</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+        <span class="c1"># extraction of the cycles</span>
+        <span class="n">cyc</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">p</span><span class="p">]</span>
+        <span class="c1"># flag for the first time is performed</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cyc</span><span class="p">):</span>
+            <span class="c1"># calculation of the number of activation intervals and of the</span>
+            <span class="c1"># intervals ends</span>
+             <span class="n">inters</span><span class="p">,</span><span class="n">nact</span><span class="p">,</span><span class="n">idx</span> <span class="o">=</span> <span class="n">intervals</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+             <span class="n">sd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">inters</span><span class="o">.</span><span class="n">size</span><span class="p">))</span><span class="o">+</span><span class="n">side</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+
+             <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">acts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">inters</span><span class="p">,</span><span class="n">idx</span><span class="p">,</span><span class="n">sd</span><span class="p">,</span><span class="n">nact</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+             <span class="k">else</span><span class="p">:</span>
+                <span class="n">ins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">inters</span><span class="p">,</span><span class="n">idx</span><span class="p">,</span><span class="n">sd</span><span class="p">,</span><span class="n">nact</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+                <span class="n">acts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">acts</span><span class="p">,</span><span class="n">ins</span><span class="p">))</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># sorting of the modalities</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">acts</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">acts</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span><span class="o">==</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">ins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">acts</span><span class="p">[</span><span class="n">acts</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span><span class="o">==</span><span class="n">n</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="n">ins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">ins</span><span class="p">,</span><span class="n">acts</span><span class="p">[</span><span class="n">acts</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span><span class="o">==</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+            <span class="n">mods</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ins</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">))</span>
+        <span class="n">modalities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mods</span><span class="p">)</span>
+    <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">modalities</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cycles successfully divided into modalities!&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">muscles</span></div>
+
+<div class="viewcode-block" id="dendrograms"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.dendrograms">[docs]</a><span class="k">def</span> <span class="nf">dendrograms</span><span class="p">(</span><span class="n">muscles</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function for building of the dendrograms with the L1 and L infinite metrics for the clustering process `[2]`_.</span>
+
+<span class="sd">    .. _[2]: https://doi.org/10.1109/EMBC.2017.8036762</span>
+
+<span class="sd">    :Input: * **muscles** (*dict*): the dictionary containing the cycles divided by modality got as output from the modality division function.</span>
+<span class="sd">          </span>
+<span class="sd">    :Output: * **muscles** (*dict*): dictionary containing the dendrograms built from the cycles divided in modalities&quot;&quot;&quot;</span>
+    
+    
+    <span class="c1"># check for &quot;modlaities&quot; field so that the input is correct</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">muscles</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s2">&quot;modalities&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;modalities&quot; key of muscles not found, check &quot;muscles&quot; dictionary&#39;</span>
+                         <span class="s1">&#39;be sure to run modality_division first&#39;</span><span class="p">)</span>
+    <span class="c1"># retrieve of configuration parameters</span>
+    <span class="n">dendros</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">msl</span> <span class="ow">in</span> <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">]:</span>
+        <span class="c1"># calculation of the value of the % of cycle to be used as threshold</span>
+
+                
+        <span class="n">dendro_mod</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">msl</span><span class="p">:</span>
+            <span class="n">dendro</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">any</span><span class="p">()):</span>
+                <span class="c1"># check if the threshold parameter is respected</span>
+                <span class="k">if</span> <span class="n">mod</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
+
+                    <span class="c1"># dendrogram for the L1 metric</span>
+                    <span class="n">dendro</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">linkage</span><span class="p">(</span><span class="n">mod</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;complete&#39;</span><span class="p">,</span> <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;cityblock&#39;</span><span class="p">))</span>
+
+                    <span class="c1"># dendrogram for the Linf metric    </span>
+                    <span class="n">dendro</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">linkage</span><span class="p">(</span><span class="n">mod</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;complete&#39;</span><span class="p">,</span> <span class="n">metric</span> <span class="o">=</span> <span class="s1">&#39;chebyshev&#39;</span><span class="p">))</span>
+
+            <span class="n">dendro_mod</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dendro</span><span class="p">)</span>
+        <span class="n">dendros</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dendro_mod</span><span class="p">)</span>
+     
+    <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;dendrograms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dendros</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dendrograms building completed&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">muscles</span>       </div>
+
+<div class="viewcode-block" id="cuts"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.cuts">[docs]</a><span class="k">def</span> <span class="nf">cuts</span><span class="p">(</span><span class="n">muscles</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Function for the identification of the optimal cut among the three different automatic cuts performed on the dendrograms based on distance `[2]`_.</span>
+
+<span class="sd">    :Input: * **muscles** (*dict*): the dictionary containing the cycles divided by modality, and the dendrgrams got as output from the CIMAP_dendrograms function.</span>
+
+<span class="sd">    :Output: * **muscles** (*dict*): dictionary containing the best clustering obtained for each muscle and modality.&#39;&#39;&#39;</span>
+    <span class="c1"># check for &quot;dendrograms&quot; field so that the input is correct</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">muscles</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s2">&quot;dendrograms&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;dendrograms&quot; key of muscles not found, check &quot;muscles&quot; dictionary&#39;</span>
+                         <span class="s1">&#39;be sure to run CIMAP_dendrograms first&#39;</span><span class="p">)</span>
+    <span class="c1"># lists that will be added to the dictionary</span>
+    <span class="n">dendrograms_struct</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">clusters_struct</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">metrics_struct</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># configuration value assignmement</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">den</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;dendrograms&quot;</span><span class="p">]):</span>
+        <span class="c1"># list of clusters an dendrograms</span>
+        <span class="n">clusters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dendrograms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">ds</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">den</span><span class="p">):</span>
+            <span class="n">clust</span> <span class="o">=</span> <span class="p">[];</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+                <span class="n">cut_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span>
+                <span class="n">chosen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span>
+                <span class="k">for</span> <span class="n">jj</span><span class="p">,</span><span class="n">dd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+                    <span class="c1"># extraction of the three cuts using the function find cuts</span>
+                    <span class="n">cuts</span> <span class="o">=</span> <span class="n">findcuts</span><span class="p">(</span><span class="n">dd</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+
+                    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cuts</span><span class="p">)):</span>
+                        <span class="c1"># clustering from the cuts</span>
+                        <span class="n">cut</span> <span class="o">=</span> <span class="n">fcluster</span><span class="p">(</span><span class="n">dd</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">-</span><span class="n">cuts</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+                                          <span class="p">,</span><span class="n">criterion</span> <span class="o">=</span> <span class="s1">&#39;maxclust&#39;</span><span class="p">)</span>
+                        <span class="c1"># identification of single element clusters and calculation of the mean</span>
+                        <span class="c1"># distances of the elements inside the clusters</span>
+                        <span class="n">single</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">mean_dist</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">cut</span><span class="p">):</span>
+                            <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">z</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cut</span><span class="p">)</span> <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="n">v</span><span class="p">]</span>
+                            <span class="n">mean_dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pdist</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span><span class="n">metric</span><span class="o">=</span><span class="s1">&#39;cityblock&#39;</span><span class="p">)))</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="n">single</span><span class="o">+=</span><span class="mi">1</span>
+                            
+
+                        
+                        <span class="n">mean_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">))</span>
+                        <span class="c1"># the first iteration is always tken in consideration</span>
+                        <span class="k">if</span> <span class="n">cut_ind</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                            <span class="c1"># the cut index is (intra_var*n° of meaningful clusters)/n° of elements in the meaningful clusters</span>
+                            <span class="c1"># the former cut index privileged too much cuts with higher numbers of small clusters</span>
+                            <span class="n">cut_ind</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">single</span><span class="p">)</span>
+                            <span class="n">clust</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cut</span><span class="p">)</span>
+                            <span class="n">chosen</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">+</span><span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">single</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">cut_ind</span><span class="p">[</span><span class="n">jj</span><span class="p">]:</span>
+                                <span class="n">cut_ind</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">single</span><span class="p">)</span>
+                                <span class="n">clust</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">cut</span>
+                                <span class="n">chosen</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">+</span><span class="mi">1</span>
+                
+                <span class="c1"># evaluation of the best metrics between the two possible if used</span>
+                <span class="c1"># using clust variability</span>
+                <span class="n">clust_var</span> <span class="o">=</span> <span class="p">[]</span>        
+                <span class="k">for</span> <span class="n">cl</span> <span class="ow">in</span> <span class="n">clust</span><span class="p">:</span>
+                     <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">cl</span> <span class="o">==</span> <span class="n">v_L</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">cl</span> <span class="o">==</span> <span class="n">v_L</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">v_L</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">cl</span><span class="p">)]</span>
+                     <span class="n">z</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+                     <span class="n">clust_var</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">z</span><span class="o">!=</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">clust_var</span> <span class="o">==</span> <span class="nb">min</span><span class="p">(</span><span class="n">clust_var</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">norm</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">chosen</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="s1">&#39;L1 norm&#39;</span><span class="p">])</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">norm</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">chosen</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="s1">&#39;L inf norm&#39;</span><span class="p">])</span>
+
+
+                <span class="n">clusters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clust</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="n">dendrograms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;dendrograms&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">idx</span><span class="p">])</span>
+
+                        
+            <span class="k">else</span><span class="p">:</span>
+               <span class="n">dendrograms</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+               <span class="n">clusters</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+               <span class="n">norm</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                
+        <span class="n">dendrograms_struct</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dendrograms</span><span class="p">)</span>  
+        <span class="n">clusters_struct</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span>
+        <span class="n">metrics_struct</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span>
+    <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;dendrograms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dendrograms_struct</span>
+    <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;clusters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clusters_struct</span>
+    <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metrics_struct</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Best clustering result chosen&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">muscles</span></div>
+        
+<div class="viewcode-block" id="findcuts"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.findcuts">[docs]</a><span class="k">def</span> <span class="nf">findcuts</span><span class="p">(</span><span class="n">distance</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Function for the automatic identification of the cutting point on the dendrograms `[1]`_.</span>
+
+<span class="sd">    :Input: * **distance** (*numpyarray*): the distance array that is the third column of the linkage function output.</span>
+
+<span class="sd">    :Output: * **cuts** (*list*): list containing the optimal cutting point for each type of cut used.&#39;&#39;&#39;</span>
+    <span class="n">dist_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dist_diff</span><span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">dist_diff</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dist_diff</span><span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">dist_diff</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">:],</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="n">x</span> <span class="o">=</span> <span class="n">_smooth</span><span class="p">(</span><span class="n">dist_diff</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">i_sm</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="k">while</span> <span class="n">x</span><span class="p">[</span><span class="n">i_sm</span><span class="p">]</span><span class="o">&gt;=</span> <span class="n">x</span><span class="p">[</span><span class="n">i_sm</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">i_sm</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">i_sm</span><span class="o">-=</span><span class="mi">1</span>
+    
+    <span class="n">idx3</span> <span class="o">=</span> <span class="n">i_sm</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dist_diff</span> <span class="o">&gt;</span> <span class="n">mean</span><span class="p">)):</span>
+        <span class="n">idx1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dist_diff</span> <span class="o">&gt;</span> <span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">idx1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dist_diff</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dist_diff</span> <span class="o">&gt;</span> <span class="n">mean</span><span class="o">+</span><span class="n">std</span><span class="p">)):</span>
+        <span class="n">idx2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dist_diff</span> <span class="o">&gt;</span> <span class="n">mean</span><span class="o">+</span><span class="n">std</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">idx2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dist_diff</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+    
+    <span class="n">cuts</span> <span class="o">=</span><span class="p">[</span><span class="n">idx1</span><span class="p">,</span><span class="n">idx2</span><span class="p">,</span><span class="n">idx3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">cuts</span></div>
+
+
+<span class="k">def</span> <span class="nf">_smooth</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">WSZ</span><span class="p">):</span>
+    <span class="c1"># a: NumPy 1-D array containing the data to be smoothed</span>
+    <span class="c1"># WSZ: smoothing window size needs, which must be odd number,</span>
+    <span class="c1"># as in the original MATLAB implementation</span>
+    <span class="n">out0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">WSZ</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span><span class="s1">&#39;valid&#39;</span><span class="p">)</span><span class="o">/</span><span class="n">WSZ</span>    
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">WSZ</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="n">WSZ</span><span class="o">-</span><span class="mi">1</span><span class="p">])[::</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">r</span>
+    <span class="n">stop</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="o">-</span><span class="n">WSZ</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])[::</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">r</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span>  <span class="n">start</span> <span class="p">,</span> <span class="n">out0</span><span class="p">,</span> <span class="n">stop</span>  <span class="p">))</span>
+
+<div class="viewcode-block" id="algorithm_output"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.algorithm_output">[docs]</a><span class="k">def</span> <span class="nf">algorithm_output</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">muscles</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Function for the creation of the output of the algorithm. The output structure of this function is used for the clusterplot graphical function for the representation of the results of clustering.</span>
+<span class="sd">    </span>
+<span class="sd">    :Input: * **s** (*dict*): the dictionary containing the cycles activation data created by the Input function from the *.csv* file.</span>
+<span class="sd">            * **muscles** (*dict*): output dictionary from the &quot;CIMAP_cuts&quot; function containing the results of the clustering on the ciclical activation intervals</span>
+<span class="sd">    :Output: * **cimap_out** (*dict*): dictionary that contains the results of clustering divided for each individual muscle given as input with the removal of the non significant cluster&#39;&#39;&#39;</span>
+
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">clustering</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">non_significant</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="c1"># check for &quot;clusters&quot; field so that the input is correct</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">muscles</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s2">&quot;clusters&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;clusters&quot; key of muscles not found, check &quot;muscles&quot; dictionary&#39;</span>
+                         <span class="s1">&#39;be sure to run CIMAP_cuts first&#39;</span><span class="p">)</span>
+    <span class="c1"># separation of each muscle one side at a time</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">lbl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">sd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;side&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]):</span>
+            <span class="n">clusters</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># flag for the first creation of the non significant np.array</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">sd</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">lb</span> <span class="o">=</span> <span class="n">lbl</span><span class="o">+</span><span class="s2">&quot;_L&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">lb</span> <span class="o">=</span> <span class="n">lbl</span><span class="o">+</span><span class="s2">&quot;_R&quot;</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">clus</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;clusters&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]):</span>
+                
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">clus</span><span class="p">):</span>
+                    <span class="c1"># identification of the cycles to extract</span>
+                   <span class="n">ext</span> <span class="o">=</span> <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">sd</span>
+                   <span class="c1"># number of clusters</span>
+                   <span class="n">ncl</span> <span class="o">=</span> <span class="n">muscles</span><span class="p">[</span><span class="s1">&#39;clusters&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+                   <span class="c1"># threshold for the coloring of the dendrogram</span>
+                   <span class="n">t2</span> <span class="o">=</span> <span class="n">muscles</span><span class="p">[</span><span class="s1">&#39;dendrograms&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">ncl</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="mi">2</span><span class="p">]</span>
+                   <span class="n">t1</span> <span class="o">=</span> <span class="n">muscles</span><span class="p">[</span><span class="s1">&#39;dendrograms&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">ncl</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span><span class="mi">2</span><span class="p">]</span>
+                   <span class="c1"># setting the color palette</span>
+                   <span class="n">link_color_pal</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">&quot;tab10&quot;</span><span class="p">)</span>
+                   <span class="n">link_color_pal</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">link_color_pal</span><span class="o">.</span><span class="n">as_hex</span><span class="p">())</span>
+                   <span class="c1"># removing orange and red from the color palette because of </span>
+                   <span class="c1"># later graphical functions</span>
+                   <span class="n">link_color_pal</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                   <span class="n">link_color_pal</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                   <span class="n">hierarchy</span><span class="o">.</span><span class="n">set_link_color_palette</span><span class="p">(</span><span class="n">link_color_pal</span><span class="p">)</span>
+                   <span class="c1"># construction of the dendrograms and extraction of the colors</span>
+                   <span class="c1"># associated with the clusters</span>
+                   <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">t1</span><span class="o">+</span><span class="n">t2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+                   <span class="n">dn</span> <span class="o">=</span> <span class="n">hierarchy</span><span class="o">.</span><span class="n">dendrogram</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s1">&#39;dendrograms&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span><span class="n">color_threshold</span> <span class="o">=</span> <span class="n">t</span><span class="p">,</span><span class="n">no_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                   <span class="n">cols</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">dn</span><span class="p">[</span><span class="s1">&#39;leaves&#39;</span><span class="p">],</span><span class="n">dn</span><span class="p">[</span><span class="s1">&#39;leaves_color_list&#39;</span><span class="p">]))])</span>
+                   <span class="c1"># adding the clusters to the list of clusters for the muscle</span>
+                   <span class="c1"># taking them from the original data and not with different</span>
+                   <span class="c1"># number of columns given by the modality</span>
+                   <span class="c1"># Also the information about the cluster that the cycle belong to,</span>
+                   <span class="c1"># the temporal sequence and color are stored</span>
+               
+                   <span class="n">clusters</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">][</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]][</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">ext</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,:],</span><span class="n">clus</span><span class="p">[</span><span class="n">ext</span><span class="p">],</span><span class="n">cols</span><span class="p">[</span><span class="n">ext</span><span class="p">],</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">ext</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">]])</span>
+                <span class="k">elif</span> <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span><span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">clus</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c1"># extraction of the non significative clusters</span>
+                        <span class="n">ext</span> <span class="o">=</span> <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">sd</span>
+                        <span class="n">ns</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">][</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]][</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">ext</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span>
+                        <span class="k">if</span> <span class="n">ns</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                            <span class="c1"># to avoid situation when non of the cycles is non significant</span>
+                            <span class="c1"># to have an empty list</span>
+                            <span class="n">ns_idx</span> <span class="o">=</span> <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">ext</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">ns_idx</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+                        <span class="n">clusters</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ext</span> <span class="o">=</span> <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">sd</span>
+                        <span class="n">ns_ins</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">][</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]][</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">ext</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span>
+                        <span class="k">if</span> <span class="n">ns_ins</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                            <span class="n">ns</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">ns</span><span class="p">,</span><span class="n">ns_ins</span><span class="p">))</span>
+                            <span class="n">ns_ins</span> <span class="o">=</span> <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">ext</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">ns_ins</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">ns_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">ns_idx</span><span class="p">,</span><span class="n">ns_ins</span><span class="p">))</span>
+                        <span class="n">clusters</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">clusters</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="n">clustering</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+             <span class="n">non_significant</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ns</span><span class="p">,</span><span class="n">ns_idx</span><span class="p">])</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span>
+    <span class="n">cimap_out</span> <span class="o">=</span> <span class="p">{</span>
+           <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">labels</span><span class="p">,</span>
+            <span class="s2">&quot;clusters&quot;</span><span class="p">:</span> <span class="n">clustering</span><span class="p">,</span>
+            <span class="s2">&quot;non_significant&quot;</span><span class="p">:</span><span class="n">non_significant</span>        
+       <span class="p">}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Output dictionary created&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cimap_out</span></div>
+
+<div class="viewcode-block" id="resultsaver"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.resultsaver">[docs]</a><span class="k">def</span> <span class="nf">resultsaver</span><span class="p">(</span><span class="n">cimap_out</span><span class="p">,</span><span class="n">input_file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">saving</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Function for saving the results of CIMAP in a *.csv* file.</span>
+
+<span class="sd">    :Input: * **cimap_out** (*dict*): the dictionary containing the results of the application of CIMAP obtained from the function algorithm_output.</span>
+<span class="sd">            * **input_file** (*string*): the path of the input file containing the data given to CIMAP. When set to *None* the function gives the opportunity to choose the folder where to save the data and input manually the name to give to the file.</span>
+<span class="sd">            * **saving** (*bool*): a boolean variable that can be used to decide whether to save the results or not.</span>
+<span class="sd">    :Output: * **rows** (*array*): array containing the results of the application of CIMAP.&#39;&#39;&#39;</span>
+    
+    <span class="n">rows</span><span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># for each muscle</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cimap_out</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])):</span>
+        
+        <span class="n">row</span><span class="p">,</span><span class="n">position</span> <span class="o">=</span> <span class="p">[],[]</span>
+        <span class="c1"># for each modality</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">cl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cimap_out</span><span class="p">[</span><span class="s2">&quot;clusters&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">cl</span><span class="p">):</span>
+                <span class="c1"># creating the 6 digits code for each cycle</span>
+                <span class="n">row</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{:0&gt;2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;</span><span class="si">{:0&gt;4}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">cl</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="n">position</span><span class="o">+=</span>  <span class="n">cl</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="c1"># checking the non significant cycles        </span>
+        <span class="k">if</span> <span class="n">cimap_out</span><span class="p">[</span><span class="s2">&quot;non_significant&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">_</span><span class="p">,</span><span class="n">nact</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">intervals</span><span class="p">(</span><span class="n">cimap_out</span><span class="p">[</span><span class="s2">&quot;non_significant&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="c1"># creating the 6 digits code for the non significant cycles</span>
+            <span class="n">row</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{:0&gt;2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;0000&quot;</span><span class="p">,</span><span class="n">nact</span><span class="p">))</span>
+            <span class="n">position</span> <span class="o">+=</span> <span class="n">cimap_out</span><span class="p">[</span><span class="s2">&quot;non_significant&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="c1"># rearraning to the sequential order of the cycles given in input</span>
+        <span class="n">row</span><span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">position</span><span class="p">,</span><span class="n">row</span><span class="p">))]</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">cimap_out</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+    <span class="c1"># getting the path of the input file to write the file where the input_file is    </span>
+    <span class="k">if</span> <span class="n">saving</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+            <span class="n">root</span><span class="o">.</span><span class="n">attributes</span><span class="p">(</span><span class="s2">&quot;-topmost&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+            <span class="n">root</span><span class="o">.</span><span class="n">withdraw</span><span class="p">()</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">tkinter</span><span class="o">.</span><span class="n">filedialog</span><span class="o">.</span><span class="n">askdirectory</span><span class="p">(</span><span class="n">parent</span> <span class="o">=</span> <span class="n">root</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Select Folder&#39;</span><span class="p">)</span>
+            <span class="n">root</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+            <span class="n">name_results</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please Insert the name of the file containig the results: &quot;</span><span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="o">+</span><span class="n">name_results</span><span class="o">+</span><span class="s2">&quot;.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ps</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">ps</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_file</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;_Output_CIMAP.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        
+        
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">lineterminator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Results saved!&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rows</span></div>
+
+<div class="viewcode-block" id="actplot"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.actplot">[docs]</a><span class="k">def</span> <span class="nf">actplot</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function for plotting all the cycles and the activation before the application of CIMAP</span>
+<span class="sd">    </span>
+<span class="sd">    :Input: * **s** (*dict*): the dictionary containing the cycles activation data created by the Input function from the *.csv* file.</span>
+<span class="sd">            * **target**: &quot;All&quot; (*default*), labels or portion of the label of the muscle that you want to plot. For example if LGS_R and LGS_L are available inserting the target &quot;LGS&quot; would plot both. Inserting the exact label give as output the graphs related to that label.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check that the field &quot;Cycles&quot; exists and is corectly labeled </span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">keys_l</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;cycles&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;Cycles&quot; key of dictionary not found, check the input dictionary&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;Cycles&quot;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;cycles&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cycles&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;&quot;Cycles&quot; field format wrong, corrected&#39;</span><span class="p">)</span>
+        
+    <span class="c1"># check that the field &quot;Labels&quot; exists and is corectly labeled </span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;Labels&quot; key of dictionary not found, check the input dictionary&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;Labels&quot;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Labels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39; &quot;Labels&quot; field format wrong, corrected&#39;</span><span class="p">)</span>
+    
+    <span class="n">toplot</span> <span class="o">=</span> <span class="n">_targetgraph</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">target</span><span class="p">)</span>    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">cyc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">toplot</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]):</span>
+        <span class="c1"># setting the gaps to NaN so that it won&#39;t be graphed in any way and leaves</span>
+        <span class="c1"># an empty space</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+        <span class="n">cycles</span> <span class="o">=</span> <span class="n">cyc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">cycles</span><span class="p">[</span><span class="n">cycles</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">cycles</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">cyc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cycles</span><span class="p">):</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">cyc</span><span class="o">*-</span><span class="n">j</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="o">-</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">toplot</span><span class="p">[</span><span class="s2">&quot;Labels&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">ticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Gait cycles&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Cycle duration (%)&#39;</span><span class="p">)</span>
+        <span class="n">matplotlib</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;ytick&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="modality_distribution"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.modality_distribution">[docs]</a><span class="k">def</span> <span class="nf">modality_distribution</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">):</span>
+    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method for the graphical representation of the distribution of the cycles into the modalities.</span>
+
+<span class="sd">    :Input: * **s** (*dict*): the dictionary containing the cycles activation data created by the Input function from the *.csv* file.</span>
+<span class="sd">            * **target**: &quot;All&quot; (*default*), labels or portion of the label of the muscle that you want to plot. For example if LGS_R and LGS_L are available inserting the target &quot;LGS&quot; would plot both. Inserting the exact label give as output the graphs related to that label.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check that the field &quot;Cycles&quot; exists and is corectly labeled </span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">keys_l</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;cycles&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;Cycles&quot; key of dictionary not found, check the input dictionary&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;Cycles&quot;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;cycles&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cycles&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;&quot;Cycles&quot; field format wrong, corrected&#39;</span><span class="p">)</span>
+        
+    <span class="c1"># check that the field &quot;Labels&quot; exists and is corectly labeled </span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;Labels&quot; key of dictionary not found, check the input dictionary&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;Labels&quot;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Labels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39; &quot;Labels&quot; field format wrong, corrected&#39;</span><span class="p">)</span>
+    
+    <span class="n">toplot</span> <span class="o">=</span> <span class="n">_targetgraph</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">target</span><span class="p">)</span>    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">cycles</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">toplot</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+        <span class="n">_</span><span class="p">,</span><span class="n">nact</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">intervals</span><span class="p">(</span><span class="n">cycles</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">nact</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">nact</span><span class="p">)</span><span class="o">-</span><span class="mf">.5</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">nact</span><span class="p">)</span><span class="o">+</span><span class="mf">1.5</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">rwidth</span> <span class="o">=</span> <span class="mf">.5</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">toplot</span><span class="p">[</span><span class="s2">&quot;Labels&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">nact</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">ticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">nact</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Number of occurrences (#)&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Modalities&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dendroplot"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.dendroplot">[docs]</a><span class="k">def</span> <span class="nf">dendroplot</span><span class="p">(</span><span class="n">muscles</span><span class="p">,</span><span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method for plotting the dendrograms built with CIMAP and chosen after performing the clustering process.</span>
+
+<span class="sd">    :Input: * **muscles** (*dict*): the dictionary obtained as output from the CIMAP_cuts function.</span>
+<span class="sd">            * **target**: &quot;All&quot; (*default*), labels or portion of the label of the muscle that you want to plot. For example if LGS_R and LGS_L are available inserting the target &quot;LGS&quot; would plot both. Inserting the exact label give as output the graphs related to that label.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check for &quot;dendrograms&quot; and &quot;clusters&quot; field so that the input is correct</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">muscles</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s2">&quot;dendrograms&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;dendrograms&quot; key of muscles not found, check &quot;muscles&quot; dictionary&#39;</span>
+                         <span class="s1">&#39;be sure to run CIMAP.dendrograms and CIMAP.cuts first&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;clusters&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;clusters&quot; key of muscles not found, check &quot;muscles&quot; dictionary&#39;</span>
+                         <span class="s1">&#39;be sure to run CIMAP.cuts first&#39;</span><span class="p">)</span>
+    
+    <span class="n">toplot</span> <span class="o">=</span> <span class="n">_targetgraph</span><span class="p">(</span><span class="n">muscles</span><span class="p">,</span><span class="n">target</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">dens</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">toplot</span><span class="p">[</span><span class="s1">&#39;dendrograms&#39;</span><span class="p">]):</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">dendro</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dens</span><span class="p">):</span>  
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dendro</span><span class="p">):</span>
+                <span class="n">count</span> <span class="o">+=</span><span class="mi">1</span>
+        <span class="n">fig</span><span class="p">,</span><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">dendro</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dens</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dendro</span><span class="p">):</span>
+                
+                <span class="c1"># retrieving the number of clusters</span>
+                <span class="n">ncl</span> <span class="o">=</span> <span class="n">toplot</span><span class="p">[</span><span class="s1">&#39;clusters&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+                <span class="c1"># calculating the threshold for coloring the clusters</span>
+                <span class="n">t2</span> <span class="o">=</span> <span class="n">dendro</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">ncl</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">t1</span> <span class="o">=</span> <span class="n">dendro</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">ncl</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">t1</span><span class="o">+</span><span class="n">t2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+                <span class="c1"># setting the color palette</span>
+                <span class="n">link_color_pal</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s2">&quot;tab10&quot;</span><span class="p">)</span>
+                <span class="n">link_color_pal</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">link_color_pal</span><span class="o">.</span><span class="n">as_hex</span><span class="p">())</span>
+                <span class="n">link_color_pal</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="n">link_color_pal</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">hierarchy</span><span class="o">.</span><span class="n">set_link_color_palette</span><span class="p">(</span><span class="n">link_color_pal</span><span class="p">)</span>
+                <span class="c1"># building the dendrogram graphically</span>
+                <span class="n">hierarchy</span><span class="o">.</span><span class="n">dendrogram</span><span class="p">(</span><span class="n">dendro</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">count</span><span class="p">],</span><span class="n">color_threshold</span> <span class="o">=</span> <span class="n">t</span><span class="p">,</span> <span class="n">above_threshold_color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="n">toplot</span><span class="p">[</span><span class="s1">&#39;metrics&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">cut</span> <span class="o">=</span> <span class="s1">&#39;CutA&#39;</span>
+                <span class="k">elif</span> <span class="n">toplot</span><span class="p">[</span><span class="s1">&#39;metrics&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">cut</span> <span class="o">=</span> <span class="s1">&#39;CutB&#39;</span>
+                <span class="k">elif</span> <span class="n">toplot</span><span class="p">[</span><span class="s1">&#39;metrics&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">cut</span> <span class="o">=</span> <span class="s1">&#39;CutB&#39;</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">tit</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">+</span> <span class="s1">&#39; modality - &#39;</span> <span class="o">+</span> <span class="n">cut</span> <span class="o">+</span> <span class="s1">&#39; - metric: &#39;</span> <span class="o">+</span> <span class="n">toplot</span><span class="p">[</span><span class="s1">&#39;metrics&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> 
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">tit</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">+</span> <span class="s1">&#39; modalities - &#39;</span> <span class="o">+</span> <span class="n">cut</span> <span class="o">+</span> <span class="s1">&#39; - metric: &#39;</span> <span class="o">+</span> <span class="n">toplot</span><span class="p">[</span><span class="s1">&#39;metrics&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> 
+                <span class="n">axes</span><span class="p">[</span><span class="n">count</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">tit</span><span class="p">)</span>
+                <span class="n">count</span> <span class="o">+=</span><span class="mi">1</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">supxlabel</span><span class="p">(</span><span class="s1">&#39;Cycles&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">supylabel</span><span class="p">(</span><span class="s1">&#39;Distance&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">toplot</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span><span class="n">x</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">.95</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span></div>
+    
+
+
+<div class="viewcode-block" id="clustersplot"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.CIMAP.clustersplot">[docs]</a><span class="k">def</span> <span class="nf">clustersplot</span><span class="p">(</span><span class="n">cimap_out</span><span class="p">,</span><span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;All&#39;</span><span class="p">,</span><span class="n">color</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Method for the visualization of the clustering results of CIMAP.</span>
+
+<span class="sd">    :Input: * **cimap_out** (*dict*): the dictionary obtained as output from the CIMAP_output function.</span>
+<span class="sd">            * **target**: &quot;All&quot; (*default*), labels or portion of the label of the muscle that you want to plot. For example if LGS_R and LGS_L are available inserting the target &quot;LGS&quot; would plot both. Inserting the exact label give as output the graphs related to that label.</span>
+<span class="sd">            * **color** (*boolean*): False (*default*), parameter to set the color of the clusters matching.&quot;&quot;&quot;</span>
+    
+    <span class="c1"># checking that the input is correct</span>
+
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cimap_out</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;name&quot; key of &quot;cimap_out&quot; not found, check &quot;cimap_out&quot; dictionary&#39;</span>
+                         <span class="s1">&#39;be sure to run CIMAP_output first&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;clusters&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;clusters&quot; key of &quot;cimap_out&quot; not found, check &quot;cimap_out&quot; dictionary&#39;</span>
+                         <span class="s1">&#39;be sure to run CIMAP_output first&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;non_significant&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;non_significant&quot; key of &quot;cimap_out&quot; not found, check &quot;cimap_out&quot; dictionary&#39;</span>
+                         <span class="s1">&#39;be sure to run CIMAP_output first&#39;</span><span class="p">)</span>
+    
+    <span class="n">toplot</span> <span class="o">=</span> <span class="n">_targetgraph</span><span class="p">(</span><span class="n">cimap_out</span><span class="p">,</span><span class="n">target</span><span class="p">)</span>
+    <span class="c1"># one muscle at a time</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">mslname</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">toplot</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]):</span>
+        <span class="c1"># one modality at a time</span>
+        <span class="n">cont</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">clus</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">toplot</span><span class="p">[</span><span class="s2">&quot;clusters&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">clus</span><span class="p">):</span>
+                <span class="n">cont</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">toplot</span><span class="p">[</span><span class="s2">&quot;non_significant&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">cont</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">fig</span><span class="p">,</span><span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">cont</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mf">7.5</span><span class="p">))</span>
+        <span class="n">cont</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">clus</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">toplot</span><span class="p">[</span><span class="s2">&quot;clusters&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]):</span>
+            <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># extracting clusters one at a time</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">clus</span><span class="p">):</span>
+                
+                <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">clus</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">tick</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="p">[]</span>
+                
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">clus</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="n">ext</span> <span class="o">=</span> <span class="n">clus</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">k</span>
+                    <span class="c1"># if the cluster exists and is not a single element</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ext</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="n">el</span> <span class="o">=</span> <span class="n">clus</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">ext</span><span class="p">]</span>
+                        <span class="c1"># get the color or it is set to blue</span>
+                        <span class="k">if</span> <span class="n">color</span><span class="p">:</span>
+                            <span class="n">color_in</span> <span class="o">=</span> <span class="n">clus</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">ext</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">color_in</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span>
+                        <span class="n">idx</span> <span class="o">=</span> <span class="n">clus</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="n">ext</span><span class="p">]</span>
+                        <span class="c1"># calculating the prototype</span>
+                        <span class="n">out</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">intervals</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+                        <span class="n">proto</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">clus</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                        <span class="n">ins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="n">proto</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">100</span>
+                        <span class="n">ins</span> <span class="o">-=</span><span class="mi">1</span>
+                        <span class="n">el</span><span class="p">[</span><span class="n">el</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                        <span class="c1"># plotting the cluster</span>
+                        <span class="k">for</span> <span class="n">jj</span><span class="p">,</span><span class="n">act</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
+                            <span class="n">counter</span> <span class="o">-=</span><span class="mi">1</span>
+                            <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">act</span><span class="o">*</span><span class="n">counter</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">color_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+                            <span class="n">tick</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+                            <span class="n">label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="n">jj</span><span class="p">])))</span>
+                        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ins</span><span class="p">)):</span>
+                            <span class="k">if</span> <span class="n">p</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">proto</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">ins</span><span class="p">[</span><span class="n">p</span><span class="p">]):</span><span class="nb">int</span><span class="p">(</span><span class="n">ins</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                        <span class="n">proto</span><span class="p">[</span><span class="n">proto</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                        <span class="n">counter</span> <span class="o">-=</span><span class="mi">1</span>
+                        <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">proto</span><span class="o">*</span><span class="n">counter</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+                        <span class="n">tick</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+                        <span class="n">label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;P&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">)))</span>
+                        <span class="n">counter</span> <span class="o">-=</span><span class="mi">1</span>
+                    <span class="c1"># if is a single element cluster is plotted thicker like a</span>
+                    <span class="c1"># prototype</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ext</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">el</span> <span class="o">=</span> <span class="n">clus</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">ext</span><span class="p">]</span>
+                        <span class="n">el</span><span class="p">[</span><span class="n">el</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                        <span class="n">idx</span> <span class="o">=</span> <span class="n">clus</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="n">ext</span><span class="p">]</span>
+                        <span class="n">counter</span> <span class="o">-=</span><span class="mi">1</span>
+                        <span class="k">if</span> <span class="n">color</span><span class="p">:</span>
+                            <span class="n">color_in</span> <span class="o">=</span> <span class="n">clus</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">ext</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">color_in</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span>
+                        <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">el</span><span class="p">,(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span><span class="o">*</span><span class="n">counter</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">color_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+                        <span class="n">tick</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+                        <span class="n">label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;P&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39; - &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+                        <span class="n">counter</span> <span class="o">-=</span><span class="mi">1</span>
+                <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span> 
+                <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+                <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">counter</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
+                <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; modality&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; modalities&quot;</span><span class="p">)</span>
+
+                <span class="n">cont</span> <span class="o">+=</span><span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">toplot</span><span class="p">[</span><span class="s2">&quot;non_significant&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="c1"># plotting the non_significant modalities with the reference to the</span>
+            <span class="c1"># number of modality each cycles has</span>
+
+            <span class="n">ns</span> <span class="o">=</span> <span class="n">toplot</span><span class="p">[</span><span class="s2">&quot;non_significant&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">toplot</span><span class="p">[</span><span class="s2">&quot;non_significant&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">tick</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">_</span><span class="p">,</span><span class="n">nact</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">intervals</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span>
+             <span class="c1">#ns[ns==0] = np.nan</span>
+            <span class="k">for</span> <span class="n">ii</span><span class="p">,</span><span class="n">ac</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ns</span><span class="p">):</span>
+                 <span class="n">counter</span><span class="o">-=</span><span class="mi">1</span>
+                 <span class="n">ac</span><span class="p">[</span><span class="n">ac</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                 <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">ac</span><span class="o">*</span><span class="n">counter</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+                 <span class="n">tick</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+                 <span class="n">label</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">nact</span><span class="p">[</span><span class="n">ii</span><span class="p">]))</span><span class="o">+</span><span class="s1">&#39; mod - &#39;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="n">ii</span><span class="p">])))</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span> 
+            <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">counter</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Modalities under Th = 10&quot;</span><span class="p">)</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">cont</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="n">mslname</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">supxlabel</span><span class="p">(</span><span class="s1">&#39;Cycle duration (%)&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">supylabel</span><span class="p">(</span><span class="s2">&quot;Gait cycles&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="n">pad</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_targetgraph</span><span class="p">(</span><span class="n">targetdict</span><span class="p">,</span><span class="n">target</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Utility method that allow the user to decide what muscle given as input output graphically.</span>
+
+<span class="sd">    :Input: * **targetdict** (*dict*): any dictionary given as input or obtained as output from CIMAP functions from which the user want to plot a muscle.</span>
+<span class="sd">    </span>
+<span class="sd">    :Returns: * **outputdict** (*dict*): dictionary containing the information necessary for the graphical function to plot the desired muscle.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">outputdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="n">outputdict</span> <span class="o">=</span> <span class="n">targetdict</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">targetdict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">keys_l</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys_l</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;labels&quot;</span><span class="p">]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="s2">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys_l</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;name&quot;</span><span class="p">]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;wrong name format in the dictionaries&quot;</span><span class="p">)</span>
+        
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">targetdict</span><span class="p">[</span><span class="n">name</span><span class="p">])</span> <span class="k">if</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">label</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;subject&#39;</span><span class="p">:</span>
+                <span class="n">outputdict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">targetdict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">outputdict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">targetdict</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">ind</span><span class="p">]</span> <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">outputdict</span>
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Gregorio Dotti.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+.wy-nav-content{
+	max-width: 1400px !important;
+}
+.wy-side-nav-search, .wy-nav-top {
+    background: #ffffff;
+}
+table{
+    margin-left: auto;
+    margin-right: auto;
+}
+.center { text-align: center; }
