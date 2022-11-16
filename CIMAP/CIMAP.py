@@ -192,7 +192,11 @@ def _csv2dict(input_file):
     ''' Ausiliary function that opens and reads the contents of the *.csv* file and rearranges it for the application of CIMAP '''
     labels,cycles = [],[]
     with open(input_file,'r') as file:
-        csvreader = csv.reader(file)
+    	txt = file.read()
+        if ';' in txt:
+            csvreader = csv.reader(file,delimiter = ';')
+        else:
+            csvreader = csv.reader(file)
         for row in csvreader:
             # checking that we are importing muscle data and not the header of the file
             if '_R' in row[0] or '_L' in row[0]:
@@ -314,7 +318,7 @@ def removeaddints(s):
                     cyc_out[k,int(ins[p]):int(ins[p+1])+1] = 1
                     
         s["Cycles"][f] = cyc_out
-    print("Interval and outliers removal performed")
+    print("Pre-processing successfully performed")
     return s
 
 
@@ -633,7 +637,7 @@ def algorithm_output(s,muscles):
             "clusters": clustering,
             "non_significant":non_significant        
        }
-    print("Output dictionary created, use resultsaver to save the data in .csv format")
+    print("Output dictionary created")
     return cimap_out
 
 def resultsaver(cimap_out,input_file = None, saving = True):

@@ -1,5 +1,5 @@
 License
 =======
 
-.. literalinclude:: ..\..\LICENSE.txt
+.. literalinclude:: ..\..\LICENSE.md
     :language: text

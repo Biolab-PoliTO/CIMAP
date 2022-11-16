@@ -1,29 +1,29 @@
 Data Requirements
 =================
 
-This section describes how your muscle activation data must be pre-processed in order to be used as input of CIMAP algorithm.
-To work properly, the algorithm requires that the data given as input must be prepared in a specific way. The first requirement is that the sEMG signal is tranformed into activation intervals. The activation intervals are binary arrays that are equal to **1** when the muscle is considered active and **0** when the muscle is considered non-active. Here are two representative methods that can be used for the identification of the muscle activation intervals: one based on a statistical approach `[1]`_ and one based on a Deep Learning approach `[2]`_.
-Then is required that the cycles are time normalized to a total of 1000 time-samples. This is required for avoiding the influence of the natural difference in time duration of the different cycles.
+The input dataset must be in a specific format to fit the analysis framework. This section will guide you on how to prepare your dataset to fit the CIMAP data requirements.
+To work properly, CIMAP requires as input the activation intervals of each observed muscle and side. Muscle activation intervals can be obtained from raw surface electromyographic (sEMG) signals by detecting the beginning (onset) and the end (offset) time-instant of muscle activations during specific movements. In the last years, several algorithms have been published in the literature, spanning from approaches based on double-threshold statistical detectors `[1]`_ to approaches based on deep-learning techniques `[2]`_. Independently from the algorithm used to extract the onset-offset intervals, muscle activation intervals are defined as binary masks that are set equal to 1 when a muscle activation is detected and equal to 0 otherwise (see **Figure 1**). Finally, to avoid biases due to the different time duration of each cycle, muscle activation intervals must be time-normalized to 1000 time samples before CIMAP application.
 
 .. _[1]: https://doi.org/10.1109/10.661154
 .. _[2]: https://doi.org/10.1186/s12984-021-00945-w
 
+ .. figure:: ./_static/activation.png
+  :width: 800
+  :align: center
+  
+  **Figure 1** | Example of sEMG signal acquired from TA muscle of a healthy subject during walking with the indication of the muscle activation intervals computed through `[2]`_.
 
-Data Format
-~~~~~~~~~~~
+Input Data Format
+^^^^^^^^^^^^^^^^^
 
-Input Data
-^^^^^^^^^^
+The input data must be provided as a .*csv* file containing a :math:`M×(N+1)` matrix of muscle activation intervals, where :math:`M` represents the number of muscles acquired and :math:`N` the total number of time samples after time-normalization. Notice that the first column should contain the labels of each muscle. The label of each muscle should be formatted as follows:
 
-The :py:meth:`CIMAP.Run` method allows the user to select the file where the data is stored and automatically runs all the methods of CIMAP. The input data for CIMAP algorithm must be saved in a *.csv* file structured in the following way. The file should contain as many rows as the number of muscles observed and as many columns as the number of time-samples acquired plus one, because the first column contains the label referring to the muscle name.
-Each muscle will represent a row of the file with a total of Nx1000+1 columns, where N represents the total number of cycles. In each row the first column will be the label of each muscle. The label of each muscle should be formatted as it follows: [*Name of the muscle*, "_", "L" or "R"] depending on the side (e.g., 'LGS_L' for the Left side Lateral Gastrocnemius). Muscles with the same *Name of the muscle* are the ones that have the cycles merged for the application of CIMAP. The side "L" or "R" is used as information for the division when obtaining the results of the algorithm application.
+.. rst-class:: center
 
+[*Name of the muscle*, “_”, “L” or “R”]
 
-**Input Example:**
+Accordingly, the label for the left Lateral Gastrocnemius will be “*LGS_L*“. Here is an example of how the input data should look like:
 
-Following there is an example extracted from the example dataset that is available in the `GitHub`_ repository.
-
-.. _GitHub: https://github.com/marcoghislieri/CIMAP
 
 +---------------------------------------------------------------------------------------------------+
 |DATASET                                                                                            |
@@ -39,21 +39,26 @@ Following there is an example extracted from the example dataset that is availab
 |LGS_R                   |0        |0        |0        |0        |0        |0        |0        |... |
 +------------------------+---------+---------+---------+---------+---------+---------+---------+----+
 
+Notice that this example was created considering the dataset freely available in the `GitHub <https://github.com/marcoghislieri/CIMAP/tree/main/example_data>`_ repository
 
-Output Data
-^^^^^^^^^^^
-The :py:meth:`CIMAP.Run` will automatically save a *.csv* file containing the results of the application of CIMAP named ' *NameInput* _CIMAP_Results.csv'. in the same folder where the input file was.
-The results of CIMAP will be structured similarly to the input file. The output file will have a number of row equal to the number of muscles given as input. Each row will have a total of N+1 columns, where N represents the total number of cycles. In each row, the first column will be the label of each muscle. The other coulmns, that represent the sequence of cycles as given in input, will contain a 6-digit ID that stores information as explained in the image: the first and the second digits represent the modality of the cycles, the others represents the number of the cluster of belonging of the cycle. In case of a cycle that is considered as non significant the 4 last digits will be all zeros. The figure shows an example of how the output data is formatted.
+
+
+Output Data Format
+^^^^^^^^^^^^^^^^^^
+
+Clustering results are saved in an easy-to-read and open-source (.csv file) format to increase results’ accessibility, interpretability, and interoperability. More specifically, the output data will be structured similarly to the input ones. The .*csv* file is structured as a :math:`M×(C+1)` matrix, where :math:`M` represents the number of muscles acquired and :math:`C` the total number of cycles. Notice that the first column should contain the labels of each muscle as defined in the input file. Except for the first column, each column contains a 6-digit ID that stores clustering results as explained in **Figure 2**.
 
 
 .. figure:: /_static/digitscode.png
   :width: 300
   :align: center
   
-  
-**Output Example:**
+  **Figure 2** | Example of a 6-digit ID that stores clustering results. The first and the secodn digits represent the modality of the cycle. The remaining digits identify the cluster to which the cycle is assigned.
 
-Following is an example extracted from the results of the application of the algorithm on the example dataset that is available in the `GitHub`_ repository.
+
+The first and the second digits represent the modality of each cycle (i.e., the number of activation intervals occurring within the cycle) and the remaining four digits represent the number of the cluster to which each cycle is assigned. Cycles belonging to non-significant clusters (i.e., clusters characterized by a number of cycles lower than the threshold *Th*) will have the last four digits set equal to 0. Please refer to CIMAP :doc:`Documentation <../index>` for additional details on non-significant clusters.
+  
+Here is an example of how the output data looks like:
    
 +---------------------------------------------------------------------+
 |DATASET                                                              |
@@ -69,7 +74,7 @@ Following is an example extracted from the results of the application of the alg
 |LGS_R                   |020001   |010012   |010001   |010016   |... |
 +------------------------+---------+---------+---------+---------+----+
    
-
+Notice that this example was created considering the dataset freely available in the `GitHub <https://github.com/marcoghislieri/CIMAP/tree/main/example_data>`_  repository.
 
 References
 **********
