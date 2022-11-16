@@ -193,6 +193,7 @@ def _csv2dict(input_file):
     labels,cycles = [],[]
     with open(input_file,'r') as file:
         txt = file.read()
+        file.seek(0)
         if ';' in txt:
             csvreader = csv.reader(file,delimiter = ';')
         else:
@@ -255,8 +256,8 @@ def removeaddints(s):
         # removal of the always OFF cycles
         if np.count_nonzero(nact==0):
             print("Full off cycles removed: %s" % np.count_nonzero(nact==0))
-        cycles = np.delete(cycles,nact==0)
-        nact = np.delete(nact,nact==0)
+            cycles = np.delete(cycles,nact==0)
+            nact = np.delete(nact,nact==0)
         
     
         # process of the identification of the always ON cycles and removal
@@ -303,8 +304,9 @@ def removeaddints(s):
             nact[i] = len(c)/2
         # removal of always ON cycles
 
-        cycles = np.delete(cycles,fullon)
-        nact = np.delete(nact,fullon)
+        if bool(fullon):
+            cycles = np.delete(cycles,fullon)
+            nact = np.delete(nact,fullon)
 
         if bool(fullon):
             print("Full on cycles removed: %s" % len(fullon))
