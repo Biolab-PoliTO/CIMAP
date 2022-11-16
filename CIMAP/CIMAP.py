@@ -639,7 +639,7 @@ def algorithm_output(s,muscles):
             if flag == 1:
              non_significant.append([ns,ns_idx])
             else:
-            	non_significant.append([ns,[]])
+            	non_significant.append(np.array([ns,[]]))
             labels.append(lb)
     cimap_out = {
            "name": labels,
