@@ -192,7 +192,7 @@ def _csv2dict(input_file):
     ''' Ausiliary function that opens and reads the contents of the *.csv* file and rearranges it for the application of CIMAP '''
     labels,cycles = [],[]
     with open(input_file,'r') as file:
-    	txt = file.read()
+        txt = file.read()
         if ';' in txt:
             csvreader = csv.reader(file,delimiter = ';')
         else:
