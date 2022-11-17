@@ -498,7 +498,9 @@ def cuts(muscles):
                 for cl in clust:
                      z = [np.mean(distance_matrix(muscles["modalities"][i][j][cl == v_L,0:-2],np.reshape(np.median(muscles["modalities"][i][j][cl == v_L,0:-2],axis=0),(1,-1)),p=1)) for v_L in set(cl)]
                      z =  np.array(z)
-                     clust_var.append(np.mean(z[z!=0]))
+                     dim = np.array([len(np.where(cl == v_L)[0]) for v_L in set(cl)])
+                     print(dim)
+                     clust_var.append(np.mean(np.delete(z,[dim==1])))
                 idx = np.where(clust_var == min(clust_var))[0][0]
                 if idx == 0:
                     norm.append([chosen[idx], 'L1 norm'])
