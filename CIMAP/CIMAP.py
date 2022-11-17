@@ -354,11 +354,11 @@ def modalitydivision(s,muscles):
              sd = np.zeros(len(nact))+side[i][k]
 
              if flag == 0:
-                intr = inters
+                intr = list(inters)
                 acts = np.vstack((idx,sd,nact)).T
                 flag = 1
              else:
-                intr = np.hstack((intr,inters))
+                intr = intr+list(inters)
                 a_ins = np.vstack((idx,sd,nact)).T
                 acts = np.vstack((acts,a_ins))
 
@@ -366,7 +366,10 @@ def modalitydivision(s,muscles):
         # sorting of the modalities
         for n in range(int(max(acts[:,-1])+1)):
             if any(acts[:,-1]==n):
-                ins = np.vstack((intr[acts[:,-1]==n]))
+                ins = np.array([])
+                for k,_ in enumerate(acts):
+                    if acts[k,-1]==n:
+                        ins = np.vstack((ins,intr[k]))
                 ins = np.hstack((ins,acts[acts[:,-1]==n,:-1]))
             else:
                 ins = np.array([])
