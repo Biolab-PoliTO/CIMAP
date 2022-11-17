@@ -255,7 +255,7 @@ def removeaddints(s):
         
         # removal of the always OFF cycles
         if np.count_nonzero(nact==0):
-            print("Full off cycles removed: %s" % np.count_nonzero(nact==0))
+            print("Full off cycles removed for muscle " +s["Labels"][f] + ": %s" % np.count_nonzero(nact==0))
             cycles = np.delete(cycles,nact==0,axis = 0)
             nact = np.delete(nact,nact==0,axis = 0)
         
@@ -309,9 +309,9 @@ def removeaddints(s):
             nact = np.delete(nact,fullon,axis = 0)
 
         if bool(fullon):
-            print("Full on cycles removed: %s" % len(fullon))
+            print("Full on cycles removed for muscle " +s["Labels"][f] + ": %s" % len(fullon))
         # Recreation of the cycles as binary arrays to be stored in s["Cycles] again
-        cyc_out = np.zeros((cyc.shape))
+        cyc_out = np.zeros((cycles.shape[0],cyc.shape[1]))
         for k,ins in enumerate(cycles):
             ins = ins*cyc_out.shape[1]/100
             ins -=1
@@ -539,18 +539,20 @@ def findcuts(distance):
     
     x = _smooth(dist_diff,5)
     i_sm = len(x)-1
-    while x[i_sm]>= x[i_sm-1] and i_sm > 0.8*len(x):
-        i_sm-=1
+    while x[i_sm]> x[i_sm-1] and i_sm > 0.8*len(x):
+        if x[i_sm]> x[i_sm-1]:
+            i_sm-=1
+            
     
-    idx3 = i_sm+1
+    idx3 = i_sm+2
     if any(list(dist_diff > mean)):
         idx1 = list(dist_diff > mean).index(True)+1
     else:
-        idx1 = len(dist_diff)-1
+        idx1 = len(dist_diff)+1
     if any(list(dist_diff > mean+std)):
         idx2 = list(dist_diff > mean+std).index(True)+1
     else:
-        idx2 = len(dist_diff)-1
+        idx2 = len(dist_diff)+1
     
     cuts =[idx1,idx2,idx3]
     return cuts
@@ -818,9 +820,13 @@ def dendroplot(muscles,target = 'All'):
         for j,dendro in enumerate(dens):  
             if len(dendro):
                 count +=1
-        fig,axes = plt.subplots(count,1)
+        if count == 1:
+            fig,axes = plt.subplots(count,squeeze = False)
+            axes = axes[0]
+        else:
+            fig,axes = plt.subplots(count,1)
  
-        cont = 0
+        count = 0
         for j,dendro in enumerate(dens):
             if len(dendro):
                 
@@ -891,7 +897,12 @@ def clustersplot(cimap_out,target = 'All',color = False):
                 cont+=1
         if toplot["non_significant"][i][0].any():
             cont+=1
-        fig,axes = plt.subplots(1,cont,figsize=(12,7.5))
+        if cont == 1:
+            fig,axes = plt.subplots(cont,squeeze = False)
+            axes = axes[0]
+        else:
+            fig,axes = plt.subplots(1,cont,figsize=(12,7.5))
+        
         cont = 0
         for j,clus in enumerate(toplot["clusters"][i]):
             counter = 0
