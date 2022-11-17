@@ -500,7 +500,7 @@ def cuts(muscles):
                      z =  np.array(z)
                      dim = np.array([len(np.where(cl == v_L)[0]) for v_L in set(cl)])
                      print(dim)
-                     clust_var.append(np.mean(np.delete(z,[dim==1])))
+                     clust_var.append(np.mean(np.delete(z,np.where(dim==1)[0]))
                 idx = np.where(clust_var == min(clust_var))[0][0]
                 if idx == 0:
                     norm.append([chosen[idx], 'L1 norm'])
