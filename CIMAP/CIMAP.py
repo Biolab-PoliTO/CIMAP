@@ -367,10 +367,18 @@ def modalitydivision(s,muscles):
         for n in range(int(max(acts[:,-1])+1)):
             if any(acts[:,-1]==n):
                 ins = np.array([])
+                flag = 0
                 for k,_ in enumerate(acts):
                     if acts[k,-1]==n:
-                        ins = np.vstack((ins,intr[k]))
-                ins = np.hstack((ins,acts[acts[:,-1]==n,:-1]))
+                        if flag == 0:
+                            ins = intr[k].T
+                            flag = 1
+                        else:
+                            ins = np.vstack((ins,intr[k]))
+                if len(np.where(acts[:,-1]==n)[0]) == 1:
+                    ins =np.append(ins,acts[acts[:,-1]==n,:-1])
+                else:
+                    ins = np.hstack((ins,acts[acts[:,-1]==n,:-1]))
             else:
                 ins = np.array([])
             mods.append(np.array(ins, dtype=np.float))
@@ -642,7 +650,7 @@ def algorithm_output(s,muscles):
             if flag == 1:
              non_significant.append([ns,ns_idx])
             else:
-            	non_significant.append(np.array([ns,[]]))
+                non_significant.append(np.array([ns,[]]))
             labels.append(lb)
     cimap_out = {
            "name": labels,
