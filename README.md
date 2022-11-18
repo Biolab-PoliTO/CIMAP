@@ -1,6 +1,6 @@
 # CIMAP: Clustering for Identification of Muscle Activation Patterns
 
-<img  src="https://github.com/marcoghislieri/CIMAP/blob/main/docs/source/_static/Logo.png" width="200"/>
+<img  src="https://github.com/marcoghislieri/CIMAP/blob/main/docs/source/_static/Logo.png" width="600"/>
 
 The accurate temporal analysis of muscle activation is of great interest in several research areas, spanning from neurorobotic systems to the assessment of altered locomotion patterns in orthopedic and neurological patients and the monitoring of their motor rehabilitation. ```CIMAP``` is a python algorithm based on agglomerative hierarchical clustering that aims at characterizing muscle activation patterns during cyclical movements by grouping strides with similar muscle activity. More specifically, ```CIMAP``` allows for widening our understanding of muscle activation patterns by applying hierarchical clustering techniques to muscle activation intervals (i.e., onset and offset time-instants of muscle activations). From muscle activation intervals to the graphical representation of the clustering results, the proposed algorithm offers a complete analysis framework for assessing muscle activation patterns that can be flexibly modified at need and applied to cyclical movements different from walking. ```CIMAP``` is addressed to scientists of any programming skill level working in different research areas such as biomedical engineering, robotics, sports, clinics, biomechanics, and neuroscience.
 
