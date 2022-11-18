@@ -107,6 +107,7 @@ References
 
 .. toctree:: :titlesonly:
    :maxdepth: 2
+   :hidden:
    :caption: Documentation:
    
    data_requirements
@@ -114,12 +115,14 @@ References
    
 .. toctree:: :titlesonly:
    :maxdepth: 4
+   :hidden:
    :caption: Examples:
    
    example
 
 .. toctree:: :titlesonly:
    :maxdepth: 4
+   :hidden:
    :caption: About:
    
    contribution
