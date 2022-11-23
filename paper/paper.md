@@ -72,6 +72,7 @@ The typical workflow when using the ```CIMAP``` algorithm consists of the follow
 
 A typical muscle activation interval analysis can be synthetically written as follows:
 
+```python
 >>>s,muscles = CIMAP.data_reading(input_file = input_file) # Load input data
 >>>s = CIMAP.removeaddints(s)                              # Remove atypical activation intervals
 >>>muscles = CIMAP.modalitydivision(s,muscles)             # Cycles division by modality
@@ -79,7 +80,7 @@ A typical muscle activation interval analysis can be synthetically written as fo
 >>>muscles = CIMAP.cuts(muscles)                           # Define dendrogram cutoff point
 >>>cimap_out = CIMAP.algorithm_output(s,muscles)           # Create output dictionary
 >>>CIMAP.resultsaver(cimap_out)                            # Save CIMAP results
-
+```
 Default setting parameters are specifically optimized for the analysis of human locomotion. Further details are available on [GitHub]( https://marcoghislieri.github.io/CIMAP/CIMAP.html).
 
 ![Dendrograms of hierarchical cluster analysis performed on cycles showing a single activation interval (top) and on cycles showing two different activation intervals (bottom), separately. Clusters obtained after the selection of the optimal cutoff point are represented in different colours. SEMG activation intervals were extracted from the Lateral Gastrocnemius (LGS) muscle of a representative healthy subject during a 5-minute overground walking at a self-selected speed. This representation was generated using ```CIMAP``` v1.0.0. \label{fig:example}](../docs/source/_static/Dendros.png)
