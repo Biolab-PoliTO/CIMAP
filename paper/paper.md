@@ -11,31 +11,25 @@ tags:
 authors:
   - name: Gregorio Dotti
     orcid: 0000-0002-0004-0243
-    equal-contrib: true
+    corresponding: true
     affiliation: "1,2"
   - name: Marco Ghislieri
     orcid: 0000-0001-7626-1563
-    equal-contrib: true
     affiliation: "1,2"
   - name: Cristina Castagneri
     orcid: 0000-0003-4489-4010
-    equal-contrib: true
     affiliation: "1,2"
   - name: Valentina Agostini
     orcid: 0000-0001-5887-1499
-    equal-contrib: true
     affiliation: "1,2"
   - name: Marco Knaflitz
     orcid: 0000-0001-5396-5103
-    equal-contrib: true
     affiliation: "1,2"
   - name: Samanta Rosati
     orcid: 0000-0003-0620-594X
-    equal-contrib: true
     affiliation: "1,2"
   - name: Gabriella Balestra
     orcid: 0000-0003-2717-648X
-    equal-contrib: true
     affiliation: "1,2"
 
 affiliations:
