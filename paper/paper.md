@@ -90,3 +90,5 @@ Default setting parameters are specifically optimized for the analysis of human 
 The latest stable release of ```CIMAP``` is freely available on [GitHub]( https://github.com/marcoghislieri/CIMAP). Documentation and a representative complete example are freely available in each version’s readme file. The latest stable release of ```CIMAP``` can be easily installed through the bash shell or command prompt with the following command:
 ```pip install CIMAP```
 Further details on the setup process and Python minimum requirements are available on [GitHub]( https://github.com/marcoghislieri/CIMAP).
+
+# References
