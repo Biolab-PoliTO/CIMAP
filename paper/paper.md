@@ -73,13 +73,20 @@ The typical workflow when using the ```CIMAP``` algorithm consists of the follow
 A typical muscle activation interval analysis can be synthetically written as follows:
 
 ```python
->>>s,muscles = CIMAP.data_reading(input_file = input_file) # Load input data
->>>s = CIMAP.removeaddints(s)                              # Remove atypical activation intervals
->>>muscles = CIMAP.modalitydivision(s,muscles)             # Cycles division by modality
->>>muscles = CIMAP.dendrograms(muscles)                    # Apply hierarchical clustering
->>>muscles = CIMAP.cuts(muscles)                           # Define dendrogram cutoff point
->>>cimap_out = CIMAP.algorithm_output(s,muscles)           # Create output dictionary
->>>CIMAP.resultsaver(cimap_out)                            # Save CIMAP results
+# Load input data
+>>>s,muscles = CIMAP.data_reading(input_file = input_file) 
+# Remove atypical activation intervals
+>>>s = CIMAP.removeaddints(s)      
+# Cycles division by modality
+>>>muscles = CIMAP.modalitydivision(s,muscles)      
+# Apply hierarchical clustering
+>>>muscles = CIMAP.dendrograms(muscles)   
+# Define dendrogram cutoff point
+>>>muscles = CIMAP.cuts(muscles)       
+# Create output dictionary
+>>>cimap_out = CIMAP.algorithm_output(s,muscles) 
+# Save CIMAP results
+>>>CIMAP.resultsaver(cimap_out)                            
 ```
 Default setting parameters are specifically optimized for the analysis of human locomotion. Further details are available on the [Documentation]( https://marcoghislieri.github.io/CIMAP/CIMAP.html) page.
 
