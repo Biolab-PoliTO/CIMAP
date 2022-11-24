@@ -50,7 +50,7 @@ Dataset preparation and pre-processing
   :width: 800
   :align: center
    
-  Muscle activation intervals extracted from the left and Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. Blue lines represent muscle activation intervals normalized into 1000 time points with respect to the cycle duration. This representation was generated using ```CIMAP``` v1.0.0.
+  Muscle activation intervals extracted from the left and Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. Blue lines represent muscle activation intervals normalized into 1000 time points with respect to the cycle duration. This representation was generated using ```CIMAP``` v1.0.4.
 
 Cycles are then divided into several sub-datasets grouping together cycles showing the same number of muscle activations within the cycle (called *modalities*).
 
@@ -76,7 +76,7 @@ The :func:`~CIMAP.CIMAP.modality_distribution` function, instead, can be used to
   :width: 800
   :align: center
   
-  Occurrences of sEMG activation patterns of the left and right Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. For each side, it is shown the number of gait cycles belonging to each modality. This representation was generated using ```CIMAP``` v1.0.0.
+  Occurrences of sEMG activation patterns of the left and right Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. For each side, it is shown the number of gait cycles belonging to each modality. This representation was generated using ```CIMAP``` v1.0.4.
 
 Agglomerative Hierarchical Clustering
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -112,7 +112,7 @@ Agglomerative Hierarchical Clustering
   :width: 800
   :align: center
 
-  Dendrograms of hierarchical cluster analysis performed on cycles showing a single activation interval (top) and on cycles showing two different activation intervals (bottom), separately. Clusters obtained after the selection of the optimal cutoff point are represented in different colours. SEMG activation intervals were extracted from the Lateral Gastrocnemius (LGS) muscle of a representative healthy subject during a 5-minute overground walking at a self-selected speed. This representation was generated using ```CIMAP``` v1.0.0.
+  Dendrograms of hierarchical cluster analysis performed on cycles showing a single activation interval (top) and on cycles showing two different activation intervals (bottom), separately. Clusters obtained after the selection of the optimal cutoff point are represented in different colours. SEMG activation intervals were extracted from the Lateral Gastrocnemius (LGS) muscle of a representative healthy subject during a 5-minute overground walking at a self-selected speed. This representation was generated using ```CIMAP``` v1.0.4.
 
 
 The :func:`~CIMAP.CIMAP.clustersplot` function, instead, can be used to show the original muscle activation intervals grouped in clusters and divided by modality. results of clustering representing the activation intervals group in each cluster divided by modality. The color property of the :func:`~CIMAP.CIMAP.clustersplot` function can be used to have a color map consistent with the one represented using the :func:`~CIMAP.CIMAP.dendroplot` function. If you are interested in a specific muscle, the target property of the :func:`~CIMAP.CIMAP.clustersplot` function can be used to set the muscle to be represented. As an example, only the clustering results computed from the left and right Lateral Gastrocnemius (LGS) muscle are represented.
@@ -134,7 +134,7 @@ The :func:`~CIMAP.CIMAP.clustersplot` function, instead, can be used to show the
   :width: 800
   :align: center
 
-  Representation of muscle activation intervals grouped in clusters and divided by modality. For each cluster, is represented the centroid (black lines) identified by the label ‘P’ + ‘N’, where N is the number associated to the cluster. The single-element clusters are represented as centroids, thicker but still coloured. The cycle belonging to the modalities that did not have enough cycles to build a dendrogram on are represented in the ‘Modality under Th = 10’ panel.
+  Representation of muscle activation intervals grouped in clusters and divided by modality. For each cluster, is represented the centroid (black lines) identified by the label ‘P’ + ‘N’, where N is the number associated to the cluster. The single-element clusters are represented as centroids, thicker but still coloured. The cycle belonging to the modalities that did not have enough cycles to build a dendrogram on are represented in the ‘Modality under Th = 10’ panel. This representation was generated using ```CIMAP``` v1.0.4.
 
 
 Data saving
