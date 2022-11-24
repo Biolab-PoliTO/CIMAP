@@ -90,7 +90,7 @@ A typical muscle activation interval analysis can be synthetically written as fo
 ```
 Default setting parameters are specifically optimized for the analysis of human locomotion. Further details are available on the [Documentation]( https://marcoghislieri.github.io/CIMAP/CIMAP.html) page.
 
-![Dendrograms of hierarchical cluster analysis performed on cycles showing a single activation interval (top) and on cycles showing two different activation intervals (bottom), separately. Clusters obtained after the selection of the optimal cutoff point are represented in different colours. SEMG activation intervals were extracted from the Lateral Gastrocnemius (LGS) muscle of a representative healthy subject during a 5-minute overground walking at a self-selected speed. This representation was generated using ```CIMAP``` v1.0.0. \label{fig:example}](../docs/source/_static/Dendros.png)
+![Dendrograms of hierarchical cluster analysis performed on cycles showing a single activation interval (top) and on cycles showing two different activation intervals (bottom), separately. Clusters obtained after the selection of the optimal cutoff point are represented in different colours. SEMG activation intervals were extracted from the Lateral Gastrocnemius (LGS) muscle of a representative healthy subject during a 5-minute overground walking at a self-selected speed. This representation was generated using ```CIMAP``` v1.0.4. \label{fig:example}](../docs/source/_static/Dendros.png)
 
 # Availability
 

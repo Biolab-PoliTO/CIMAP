@@ -53,7 +53,7 @@ Graphical representations of the cluster analysis results are available at each 
   :width: 800
   :align: center
   
-  **Figure 1** | Muscle activation intervals extracted from the left and Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. Blue lines represent muscle activation intervals normalized into 1000 time points with respect to the cycle duration. This representation was generated using ```CIMAP``` v1.0.0.
+  **Figure 1** | Muscle activation intervals extracted from the left and Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. Blue lines represent muscle activation intervals normalized into 1000 time points with respect to the cycle duration. This representation was generated using ```CIMAP``` v1.0.4.
    
 * **Data pre-processing**: occurrences of muscle activation modalities can be represented through histograms for each acquired muscle and side, separately.
 
@@ -61,7 +61,7 @@ Graphical representations of the cluster analysis results are available at each 
   :width: 800
   :align: center
   
-  **Figure 2** | Occurrences of sEMG activation patterns of the left and right Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. For each side, it is shown the number of gait cycles belonging to each modality. This representation was generated using ```CIMAP``` v1.0.0.
+  **Figure 2** | Occurrences of sEMG activation patterns of the left and right Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. For each side, it is shown the number of gait cycles belonging to each modality. This representation was generated using ```CIMAP``` v1.0.4.
    
 * **Agglomerative hierarchical clustering of each sub-dataset**: cluster analysis performed on cycles showing a specific modality can be represented for each muscle through dendrograms with the indication of the selected cutoff point and clusters.
 
