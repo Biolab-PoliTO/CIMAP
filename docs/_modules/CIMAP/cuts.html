@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CIMAP.cuts &mdash; CIMAP Algorithm 1.0.4 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/politologo.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html">
+            <img src="../../_static/Logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../data_requirements.html">Data Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CIMAP.html">Algorithm functions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../example.html">Applying CIMAP to gait analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contribution.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CIMAP Algorithm</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">CIMAP.cuts</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for CIMAP.cuts</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.findcuts</span> <span class="kn">import</span> <span class="n">findcuts</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.cluster.hierarchy</span> <span class="kn">import</span> <span class="n">fcluster</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">pdist</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">distance_matrix</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;cuts&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="cuts"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.cuts.cuts">[docs]</a><span class="k">def</span> <span class="nf">cuts</span><span class="p">(</span><span class="n">muscles</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Function for the identification of the optimal cut among the three different automatic cuts performed on the dendrograms based on distance `[2]`_.</span>
+
+<span class="sd">    :Input: * **muscles** (*dict*): the dictionary containing the cycles divided by modality, and the dendrgrams got as output from the CIMAP_dendrograms function.</span>
+
+<span class="sd">    :Output: * **muscles** (*dict*): dictionary containing the best clustering obtained for each muscle and modality.&#39;&#39;&#39;</span>
+    <span class="c1"># check for &quot;dendrograms&quot; field so that the input is correct</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">muscles</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">if</span> <span class="s2">&quot;dendrograms&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;dendrograms&quot; key of muscles not found, check &quot;muscles&quot; dictionary&#39;</span>
+                         <span class="s1">&#39;be sure to run CIMAP_dendrograms first&#39;</span><span class="p">)</span>
+    <span class="c1"># lists that will be added to the dictionary</span>
+    <span class="n">dendrograms_struct</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">clusters_struct</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">metrics_struct</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># configuration value assignmement</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">den</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;dendrograms&quot;</span><span class="p">]):</span>
+        <span class="c1"># list of clusters an dendrograms</span>
+        <span class="n">clusters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dendrograms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">ds</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">den</span><span class="p">):</span>
+            <span class="n">clust</span> <span class="o">=</span> <span class="p">[];</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+                <span class="n">cut_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span>
+                <span class="n">chosen</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span>
+                <span class="k">for</span> <span class="n">jj</span><span class="p">,</span><span class="n">dd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+                    <span class="c1"># extraction of the three cuts using the function find cuts</span>
+                    <span class="n">cuts</span> <span class="o">=</span> <span class="n">findcuts</span><span class="p">(</span><span class="n">dd</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+
+                    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cuts</span><span class="p">)):</span>
+                        <span class="c1"># clustering from the cuts</span>
+                        <span class="n">cut</span> <span class="o">=</span> <span class="n">fcluster</span><span class="p">(</span><span class="n">dd</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">-</span><span class="n">cuts</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+                                          <span class="p">,</span><span class="n">criterion</span> <span class="o">=</span> <span class="s1">&#39;maxclust&#39;</span><span class="p">)</span>
+                        <span class="c1"># identification of single element clusters and calculation of the mean</span>
+                        <span class="c1"># distances of the elements inside the clusters</span>
+                        <span class="n">single</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">mean_dist</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">cut</span><span class="p">):</span>
+                            <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">z</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cut</span><span class="p">)</span> <span class="k">if</span> <span class="n">z</span> <span class="o">==</span> <span class="n">v</span><span class="p">]</span>
+                            <span class="n">mean_dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">pdist</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">l</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span><span class="n">metric</span><span class="o">=</span><span class="s1">&#39;cityblock&#39;</span><span class="p">)))</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="n">single</span><span class="o">+=</span><span class="mi">1</span>
+                            
+
+                        
+                        <span class="n">mean_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">))</span>
+                        <span class="c1"># the first iteration is always tken in consideration</span>
+                        <span class="k">if</span> <span class="n">cut_ind</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                            <span class="c1"># the cut index is (intra_var*n° of meaningful clusters)/n° of elements in the meaningful clusters</span>
+                            <span class="c1"># the former cut index privileged too much cuts with higher numbers of small clusters</span>
+                            <span class="n">cut_ind</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">single</span><span class="p">)</span>
+                            <span class="n">clust</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cut</span><span class="p">)</span>
+                            <span class="n">chosen</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">+</span><span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">single</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">cut_ind</span><span class="p">[</span><span class="n">jj</span><span class="p">]:</span>
+                                <span class="n">cut_ind</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">)</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">mean_dist</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">single</span><span class="p">)</span>
+                                <span class="n">clust</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">cut</span>
+                                <span class="n">chosen</span><span class="p">[</span><span class="n">jj</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="o">+</span><span class="mi">1</span>
+                
+                <span class="c1"># evaluation of the best metrics between the two possible if used</span>
+                <span class="c1"># using clust variability</span>
+                <span class="n">clust_var</span> <span class="o">=</span> <span class="p">[]</span>        
+                <span class="k">for</span> <span class="n">cl</span> <span class="ow">in</span> <span class="n">clust</span><span class="p">:</span>
+                     <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">cl</span> <span class="o">==</span> <span class="n">v_L</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;modalities&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">cl</span> <span class="o">==</span> <span class="n">v_L</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">v_L</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">cl</span><span class="p">)]</span>
+                     <span class="n">z</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+                     <span class="n">dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">cl</span> <span class="o">==</span> <span class="n">v_L</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">v_L</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">cl</span><span class="p">)])</span>
+                     
+                     <span class="n">clust_var</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dim</span><span class="o">==</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])))</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">clust_var</span> <span class="o">==</span> <span class="nb">min</span><span class="p">(</span><span class="n">clust_var</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">norm</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">chosen</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="s1">&#39;L1 norm&#39;</span><span class="p">])</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">norm</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">chosen</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="s1">&#39;L inf norm&#39;</span><span class="p">])</span>
+
+
+                <span class="n">clusters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clust</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                <span class="n">dendrograms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;dendrograms&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="n">idx</span><span class="p">])</span>
+
+                        
+            <span class="k">else</span><span class="p">:</span>
+               <span class="n">dendrograms</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+               <span class="n">clusters</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+               <span class="n">norm</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                
+        <span class="n">dendrograms_struct</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dendrograms</span><span class="p">)</span>  
+        <span class="n">clusters_struct</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clusters</span><span class="p">)</span>
+        <span class="n">metrics_struct</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span>
+    <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;dendrograms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dendrograms_struct</span>
+    <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;clusters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">clusters_struct</span>
+    <span class="n">muscles</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metrics_struct</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Best clustering result chosen&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">muscles</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Gregorio Dotti.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: CIMAP
+Version: 1.1.0
+Summary: A Python package for muscle activation pattern analysis
+Home-page: https://github.com/marcoghislieri/CIMAP
+Author: Gregorio Dotti
+Author-email: gregorio.dotti@polito.it
+License: MIT
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+License-File: LICENSE.md

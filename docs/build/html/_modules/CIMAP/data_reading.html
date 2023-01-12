@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CIMAP.data_reading &mdash; CIMAP Algorithm 1.0.4 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/politologo.png"/>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html">
+            <img src="../../_static/Logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../data_requirements.html">Data Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CIMAP.html">Algorithm functions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../example.html">Applying CIMAP to gait analysis</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contribution.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CIMAP Algorithm</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">CIMAP.data_reading</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for CIMAP.data_reading</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">csv2dict</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data_reading&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="data_reading"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.data_reading.data_reading">[docs]</a><span class="k">def</span> <span class="nf">data_reading</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Function that takes the input of CIMAP and prepares the data structures for the application of CIMAP Algorithm.</span>
+<span class="sd">    </span>
+<span class="sd">    :Input: * **input_file** (*string*): a string containing the path of the *.csv* file that contains the input data for the application of CIMAP. Be sure that the input data respects the requirements set in the Data Requirements section of the documentation.</span>
+<span class="sd">    </span>
+<span class="sd">    :Output: * **s** (*dict*): data structure of CIMAP that is used for the application of the methods of the algorithm.</span>
+<span class="sd">             * **muscles** (*dict*): dictionary containing the information about the data that is given as input to CIMAP. Specifically the muscles, if the acquisition is bilateral and the position where to retrieve the cycles.&#39;&#39;&#39;</span>
+    
+    <span class="c1"># Application of the ausiliary method that reads the data from the *.csv* file and transforms it into the dictionary that is used in the following methods.</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">csv2dict</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+
+
+    <span class="c1"># check that the field &quot;Cycles&quot; exists and is corectly labeled</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">keys_l</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;cycles&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;Cycles&quot; key of dictionary not found, check the input dictionary&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;Cycles&quot;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;cycles&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;cycles&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39; &quot;Cycles&quot; field format wrong, corrected&#39;</span><span class="p">)</span>
+
+        
+    <span class="c1"># check that the field &quot;Labels&quot; exists and is corectly labeled </span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;Labels&quot; key of dictionary not found, check the input dictionary&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span><span class="p">(</span><span class="s2">&quot;Labels&quot;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">keys_l</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Labels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39; &quot;Labels&quot; field format wrong, corrected&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># check for the correct format of the input variable  </span>
+    <span class="k">for</span> <span class="n">cyc</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;Cycles&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be a numpy array&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cyc</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be an array of 2 dimensions&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cyc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be normalized to 1000 samples&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># extraction of the labels of the muscles acquired</span>
+    <span class="n">mslnames</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="n">side</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">lbl</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;Labels&quot;</span><span class="p">]:</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;L&quot;</span><span class="p">):</span>
+            <span class="n">side</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">side</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]),</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="n">lbl</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="s2">&quot;R&quot;</span><span class="p">):</span>
+            <span class="n">side</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">side</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong label format&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lbl</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span><span class="p">:</span>
+            <span class="n">mslnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mslnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c1"># identification of the position inside the labels list where the muscles are</span>
+    <span class="c1"># positioned and which side or sides are in the input list. This is made for</span>
+    <span class="c1"># following procedures inside CIMAP algorithm</span>
+    <span class="n">msl_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mslnames</span><span class="p">)</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">x1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">msl_list</span><span class="p">):</span>
+         <span class="n">pos</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mslnames</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">x1</span><span class="p">])</span>
+         <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+    <span class="n">side_out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">pos</span><span class="p">:</span>
+        <span class="n">side_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">side</span><span class="p">[</span><span class="n">c</span><span class="p">])</span>
+        
+    <span class="n">muscles</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">names</span><span class="p">,</span>
+        <span class="s2">&quot;side&quot;</span><span class="p">:</span> <span class="n">side_out</span><span class="p">,</span>
+        <span class="s2">&quot;pos&quot;</span><span class="p">:</span><span class="n">pos</span>        
+    <span class="p">}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input dataset loaded successfully&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">,</span><span class="n">muscles</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Gregorio Dotti.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

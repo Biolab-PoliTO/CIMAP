@@ -11,18 +11,18 @@ Importing libraries
  .. code-block:: python
  
 	 # Import of the library
-	 from CIMAP import CIMAP
+	 import CIMAP
 	 
 	 # Import of the library for the visualization of the graphical elements
 	 import matplotlib.pyplot as plt
 	 
 	 input_file = ".\\example_data\\Dataset.csv"
 
- Notice that is possible to easily run the CIMAP algorithm without directly calling all of the CIMAP functions by using the function  :func:`~CIMAP.CIMAP.run_algorithm`.
+ Notice that is possible to easily run the CIMAP algorithm without directly calling all of the CIMAP functions by using the function  :func:`~CIMAP.run_algorithm`.
 
 Dataset preparation and pre-processing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
- First, the :func:`~CIMAP.CIMAP.data_reading` function is used to open and format the input data according to the :doc:`Documentation <../index>` section. Within the :func:`~CIMAP.CIMAP.data_reading` function, the :func:`~CIMAP.CIMAP.intervals` function is used to extract muscle activation onset and offset (i.e., the beginning and the end of each muscle activation, respectively) time instants. Then, the :func:`~CIMAP.CIMAP.removeaddints` function is called to remove outliers (i.e., cycles characterized by always ON or always OFF activation patterns). Further details on the outliers removal process can be found in the study by Rosati *et al.* `[1]`_.
+ First, the :func:`~CIMAP.data_reading` function is used to open and format the input data according to the :doc:`Documentation <../index>` section. Within the :func:`~CIMAP.data_reading` function, the :func:`~CIMAP.intervals` function is used to extract muscle activation onset and offset (i.e., the beginning and the end of each muscle activation, respectively) time instants. Then, the :func:`~CIMAP.removeaddints` function is called to remove outliers (i.e., cycles characterized by always ON or always OFF activation patterns). Further details on the outliers removal process can be found in the study by Rosati *et al.* `[1]`_.
 
  .. _[1]: https://doi.org/10.1109/EMBC.2017.8036762
  
@@ -34,7 +34,7 @@ Dataset preparation and pre-processing
 	 >>> s = CIMAP.removeaddints(s)
 	 Pre-processing successfully performed
 
- Pre-processed muscle activation intervals can be graphically investigated using the :func:`~CIMAP.CIMAP.actplot` and :func:`~CIMAP.CIMAP.modality_distribution` functions. The :func:`~CIMAP.CIMAP.actplot` function represents the pre-processed muscle activation intervals over time for each acquired muscle and side, separately. If you are interested in a specific muscle, the target property of the :func:`~CIMAP.CIMAP.actplot` function can be used to set the muscle to be represented. As an example, only the muscle activation intervals extracted from the left and right Lateral Gastrocnemius (LGS) muscle are represented.
+ Pre-processed muscle activation intervals can be graphically investigated using the :func:`~CIMAP.actplot` and :func:`~CIMAP.modality_distribution` functions. The :func:`~CIMAP.actplot` function represents the pre-processed muscle activation intervals over time for each acquired muscle and side, separately. If you are interested in a specific muscle, the target property of the :func:`~CIMAP.actplot` function can be used to set the muscle to be represented. As an example, only the muscle activation intervals extracted from the left and right Lateral Gastrocnemius (LGS) muscle are represented.
  
 
  
@@ -50,7 +50,7 @@ Dataset preparation and pre-processing
   :width: 800
   :align: center
    
-  Muscle activation intervals extracted from the left and Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. Blue lines represent muscle activation intervals normalized into 1000 time points with respect to the cycle duration. This representation was generated using ```CIMAP``` v1.0.4.
+  Muscle activation intervals extracted from the left and Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. Blue lines represent muscle activation intervals normalized into 1000 time points with respect to the cycle duration. This representation was generated using ```CIMAP``` v1.1.0.
 
 Cycles are then divided into several sub-datasets grouping together cycles showing the same number of muscle activations within the cycle (called *modalities*).
 
@@ -61,7 +61,7 @@ Cycles are then divided into several sub-datasets grouping together cycles showi
 	 Cycles successfully divided into modalities
 
 
-The :func:`~CIMAP.CIMAP.modality_distribution` function, instead, can be used to represent the muscle activation patterns distributions. If you are interested in a specific muscle, the target property of the :func:`~CIMAP.CIMAP.modality_distribution` function can be used to set the muscle to be represented. As an example, only the histogram of the muscle activation patterns extracted from the left and right Lateral Gastrocnemius (LGS) muscle are represented.
+The :func:`~CIMAP.modality_distribution` function, instead, can be used to represent the muscle activation patterns distributions. If you are interested in a specific muscle, the target property of the :func:`~CIMAP.modality_distribution` function can be used to set the muscle to be represented. As an example, only the histogram of the muscle activation patterns extracted from the left and right Lateral Gastrocnemius (LGS) muscle are represented.
  
  .. code-block:: python
 	
@@ -76,12 +76,12 @@ The :func:`~CIMAP.CIMAP.modality_distribution` function, instead, can be used to
   :width: 800
   :align: center
   
-  Occurrences of sEMG activation patterns of the left and right Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. For each side, it is shown the number of gait cycles belonging to each modality. This representation was generated using ```CIMAP``` v1.0.4.
+  Occurrences of sEMG activation patterns of the left and right Lateral Gastrocnemius (LGS) muscle of a healthy subject during overground walking at self-selected speed. For each side, it is shown the number of gait cycles belonging to each modality. This representation was generated using ```CIMAP``` v1.1.0.
 
 Agglomerative Hierarchical Clustering
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
- Agglomerative hierarchical clustering is applied to each sub-dataset, separately. Using the :func:`~CIMAP.CIMAP.dendrograms` function, two different dendrograms are computed: the first one using the Manhattan distance metric and the second one using the Chebychev distance metric. Then, the cutoff point for each of the two dendrograms and the best clustering results are chosen using the :func:`~CIMAP.CIMAP.cuts` function. Further details on the identification of the cutoff point and the selection of the best clustering results can be found in the :doc:`Documentation <../index>` section.
+ Agglomerative hierarchical clustering is applied to each sub-dataset, separately. Using the :func:`~CIMAP.dendrograms` function, two different dendrograms are computed: the first one using the Manhattan distance metric and the second one using the Chebychev distance metric. Then, the cutoff point for each of the two dendrograms and the best clustering results are chosen using the :func:`~CIMAP.cuts` function. Further details on the identification of the cutoff point and the selection of the best clustering results can be found in the :doc:`Documentation <../index>` section.
 
  
   .. code-block:: python
@@ -95,7 +95,7 @@ Agglomerative Hierarchical Clustering
 	 Best clustering result chosen
 
 
- Clustering results can be graphically represented through the :func:`~CIMAP.CIMAP.dendroplot` and :func:`~CIMAP.CIMAP.clustersplot functions. The :func:`~CIMAP.CIMAP.clustersplot` function plots the hierarchical tree of each computed modality. Clusters obtained after the selection of the optimal cutoff point are represented in different colours. If you are interested in a specific muscle, the target property of the :func:`~CIMAP.CIMAP.dendroplot` function can be used to set the muscle to be represented. As an example, only the clustering results computed from the left and right Lateral Gastrocnemius (LGS) muscle are represented.
+ Clustering results can be graphically represented through the :func:`~CIMAP.dendroplot` and :func:`~CIMAP.clustersplot functions. The :func:`~CIMAP.clustersplot` function plots the hierarchical tree of each computed modality. Clusters obtained after the selection of the optimal cutoff point are represented in different colours. If you are interested in a specific muscle, the target property of the :func:`~CIMAP.dendroplot` function can be used to set the muscle to be represented. As an example, only the clustering results computed from the left and right Lateral Gastrocnemius (LGS) muscle are represented.
  
 
  
@@ -112,10 +112,10 @@ Agglomerative Hierarchical Clustering
   :width: 800
   :align: center
 
-  Dendrograms of hierarchical cluster analysis performed on cycles showing a single activation interval (top) and on cycles showing two different activation intervals (bottom), separately. Clusters obtained after the selection of the optimal cutoff point are represented in different colours. SEMG activation intervals were extracted from the Lateral Gastrocnemius (LGS) muscle of a representative healthy subject during a 5-minute overground walking at a self-selected speed. This representation was generated using ```CIMAP``` v1.0.4.
+  Dendrograms of hierarchical cluster analysis performed on cycles showing a single activation interval (top) and on cycles showing two different activation intervals (bottom), separately. Clusters obtained after the selection of the optimal cutoff point are represented in different colours. SEMG activation intervals were extracted from the Lateral Gastrocnemius (LGS) muscle of a representative healthy subject during a 5-minute overground walking at a self-selected speed. This representation was generated using ```CIMAP``` v1.1.0.
 
 
-The :func:`~CIMAP.CIMAP.clustersplot` function, instead, can be used to show the original muscle activation intervals grouped in clusters and divided by modality. results of clustering representing the activation intervals group in each cluster divided by modality. The color property of the :func:`~CIMAP.CIMAP.clustersplot` function can be used to have a color map consistent with the one represented using the :func:`~CIMAP.CIMAP.dendroplot` function. If you are interested in a specific muscle, the target property of the :func:`~CIMAP.CIMAP.clustersplot` function can be used to set the muscle to be represented. As an example, only the clustering results computed from the left and right Lateral Gastrocnemius (LGS) muscle are represented.
+The :func:`~CIMAP.clustersplot` function, instead, can be used to show the original muscle activation intervals grouped in clusters and divided by modality. results of clustering representing the activation intervals group in each cluster divided by modality. The color property of the :func:`~CIMAP.clustersplot` function can be used to have a color map consistent with the one represented using the :func:`~CIMAP.dendroplot` function. If you are interested in a specific muscle, the target property of the :func:`~CIMAP.clustersplot` function can be used to set the muscle to be represented. As an example, only the clustering results computed from the left and right Lateral Gastrocnemius (LGS) muscle are represented.
 
 
  .. code-block:: Python
@@ -134,13 +134,13 @@ The :func:`~CIMAP.CIMAP.clustersplot` function, instead, can be used to show the
   :width: 800
   :align: center
 
-  Representation of muscle activation intervals grouped in clusters and divided by modality. For each cluster, is represented the centroid (black lines) identified by the label ‘P’ + ‘N’, where N is the number associated to the cluster. The single-element clusters are represented as centroids, thicker but still coloured. The cycle belonging to the modalities that did not have enough cycles to build a dendrogram on are represented in the ‘Modality under Th = 10’ panel. This representation was generated using ```CIMAP``` v1.0.4.
+  Representation of muscle activation intervals grouped in clusters and divided by modality. For each cluster, is represented the centroid (black lines) identified by the label ‘P’ + ‘N’, where N is the number associated to the cluster. The single-element clusters are represented as centroids, thicker but still coloured. The cycle belonging to the modalities that did not have enough cycles to build a dendrogram on are represented in the ‘Modality under Th = 10’ panel. This representation was generated using ```CIMAP``` v1.1.0.
 
 
 Data saving
 ^^^^^^^^^^^
 
- Finally, to save the output data, the :func:`~CIMAP.CIMAP.resultsaver` function should be used. This function has the property *input_file* set equal to “*None*” by default. When called, it will open a window that allows you to select a folder where to save the results.
+ Finally, to save the output data, the :func:`~CIMAP.resultsaver` function should be used. This function has the property *input_file* set equal to “*None*” by default. When called, it will open a window that allows you to select a folder where to save the results.
 
 
  .. code-block:: python
@@ -155,4 +155,4 @@ Data saving
 References
 **********
 
-`[1]`_. S. Rosati, C. Castagneri, V. Agostini, M. Knaflitz, and G. Balestra, “Muscle contractions in cyclic movements: Optimization of CIMAP algorithm,” 2017, doi: 10.1109/EMBC.2017.8036762.
+`[1]`_. S. Rosati, C. Castagneri, V. Agostini, M. Knaflitz, and G. Balestra, Muscle contractions in cyclic movements: Optimization of CIMAP algorithm, 2017, doi: 10.1109/EMBC.2017.8036762.

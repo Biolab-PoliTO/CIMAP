@@ -78,6 +78,6 @@ Notice that this example was created considering the dataset freely available in
 
 References
 **********
-`[1]`_. P. Bonato, T. D'Alessio and M. Knaflitz, "A statistical method for the measurement of muscle activation intervals from surface myoelectric signal during gait". IEEE Transactions on Biomedical Engineering.
+`[1]`_. P. Bonato, T. D'Alessio and M. Knaflitz, A statistical method for the measurement of muscle activation intervals from surface myoelectric signal during gait. IEEE Transactions on Biomedical Engineering.
 
-`[2]`_. M. Ghislieri, G.L. Cerone, M. Knaflitz et al., "Long short-term memory (LSTM) recurrent neural network for muscle activity detection". J. NeuroEngineering Rehabil.
+`[2]`_. M. Ghislieri, G.L. Cerone, M. Knaflitz et al., Long short-term memory (LSTM) recurrent neural network for muscle activity detection. J. NeuroEngineering Rehabil.
