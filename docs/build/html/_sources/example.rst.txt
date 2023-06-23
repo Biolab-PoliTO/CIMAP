@@ -1,7 +1,7 @@
 Applying CIMAP to gait analysis
 ===============================
 
- Here is an example of how to use the CIMAP algorithm, no data are needed from you since the code uses a dataset freely available in the `GitHub <https://github.com/marcoghislieri/CIMAP/tree/main/example_data>`_ repository. More specifically, the CIMAP algorithm will be applied to study muscle activation patterns acquired from a healthy subject during overground walking at self-selected speed.
+ Here is an example of how to use the CIMAP algorithm, no data are needed from you since the code uses a dataset freely available in the `GitHub <https://github.com/Biolab-PoliTO/CIMAP/tree/main/example_data>`_ repository. More specifically, the CIMAP algorithm will be applied to study muscle activation patterns acquired from a healthy subject during overground walking at self-selected speed.
 
 Importing libraries
 ^^^^^^^^^^^^^^^^^^^

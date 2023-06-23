@@ -81,7 +81,7 @@ According to FAIR principles, clustering results are saved in an easy-to-read an
 Application Example
 ^^^^^^^^^^^^^^^^^^^
 
-An application example is available in the :doc:`Applying CIMAP to gait analysis <../example>` section. The dataset that is used in the example is the same that is already available in the `Github <https://github.com/marcoghislieri/CIMAP>`_ repository in the example_data folder.
+An application example is available in the :doc:`Applying CIMAP to gait analysis <../example>` section. The dataset that is used in the example is the same that is already available in the `Github <https://github.com/Biolab-PoliTO/CIMAP>`_ repository in the example_data folder.
 
 Cite CIMAP algorithm
 --------------------
