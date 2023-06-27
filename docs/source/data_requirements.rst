@@ -39,7 +39,7 @@ Accordingly, the label for the left Lateral Gastrocnemius will be “*LGS_L*“.
 |LGS_R                   |0        |0        |0        |0        |0        |0        |0        |... |
 +------------------------+---------+---------+---------+---------+---------+---------+---------+----+
 
-Notice that this example was created considering the dataset freely available in the `GitHub <https://github.com/marcoghislieri/CIMAP/tree/main/example_data>`_ repository
+Notice that this example was created considering the dataset freely available in the `GitHub <https://github.com/Biolab-PoliTO/CIMAP/tree/main/example_data>`_ repository
 
 
 
@@ -74,7 +74,7 @@ Here is an example of how the output data looks like:
 |LGS_R                   |020001   |010003   |010001   |010004   |... |
 +------------------------+---------+---------+---------+---------+----+
    
-Notice that this example was created considering the dataset freely available in the `GitHub <https://github.com/marcoghislieri/CIMAP/tree/main/example_data>`_  repository.
+Notice that this example was created considering the dataset freely available in the `GitHub <https://github.com/Biolab-PoliTO/CIMAP/tree/main/example_data>`_  repository.
 
 References
 **********
