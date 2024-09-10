@@ -1,4 +1,4 @@
-from .findcuts import findcuts
+from .find_cuts import find_cuts
 
 import numpy as np
 from scipy.cluster.hierarchy import fcluster
@@ -8,7 +8,7 @@ import warnings
 
 
 warnings.simplefilter("ignore", category=RuntimeWarning)
-warnings.simplefilter("ignore", category=np.VisibleDeprecationWarning)
+warnings.simplefilter("ignore", category=UserWarning)
 
 __all__ = ['cuts']
 
@@ -34,14 +34,17 @@ def cuts(muscles):
         clusters = []
         dendrograms = []
         norm = []
+        
         for j,ds in enumerate(den):
             clust = [];
+
             if bool(ds):
                 cut_ind = np.zeros((2,1))-1
                 chosen = np.zeros((2,1))-1
+
                 for jj,dd in enumerate(ds):
                     # extraction of the three cuts using the function find cuts
-                    cuts = findcuts(dd[:,2])
+                    cuts = find_cuts(dd[:,2])
 
                     for c in range(len(cuts)):
                         # clustering from the cuts

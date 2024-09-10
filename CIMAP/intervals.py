@@ -2,7 +2,7 @@ import numpy as np
 import warnings
 
 warnings.simplefilter("ignore", category=RuntimeWarning)
-warnings.simplefilter("ignore", category=np.VisibleDeprecationWarning)
+warnings.simplefilter("ignore", category=UserWarning)
 
 __all__ = ['intervals']
 
@@ -25,7 +25,7 @@ def intervals(cycles):
          raise ValueError('Wrong cycles format, must be an array of 2 dimensions')
         
         # check whether the activation values are binary
-     if np.multiply(cycles != (0),cycles != (1)).any():
+     if np.logical_and(cycles != 0, cycles != 1).any():
          raise SystemExit('Wrong Activation values')
     
         # identificattion of the transitions

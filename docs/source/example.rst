@@ -31,7 +31,7 @@ Dataset preparation and pre-processing
 	 >>> s,muscles = CIMAP.data_reading(input_file = input_file)
 	 Input dataset loaded successfully
 	 
-	 >>> s = CIMAP.removeaddints(s)
+	 >>> s = CIMAP.remove_add_ints(s)
 	 Pre-processing successfully performed
 
  Pre-processed muscle activation intervals can be graphically investigated using the :func:`~CIMAP.actplot` and :func:`~CIMAP.modality_distribution` functions. The :func:`~CIMAP.actplot` function represents the pre-processed muscle activation intervals over time for each acquired muscle and side, separately. If you are interested in a specific muscle, the target property of the :func:`~CIMAP.actplot` function can be used to set the muscle to be represented. As an example, only the muscle activation intervals extracted from the left and right Lateral Gastrocnemius (LGS) muscle are represented.
@@ -41,7 +41,7 @@ Dataset preparation and pre-processing
  .. code-block:: python
  
  	 # Plot muscle activation intervals
-	 >>> CIMAP.actplot(s,target = 'LGS')
+	 >>> CIMAP.act_plot(s,target = 'LGS')
 	 
 	 # Command to display all open figures
 	 >>> plt.show(block = False)
@@ -57,7 +57,7 @@ Cycles are then divided into several sub-datasets grouping together cycles showi
   .. code-block:: python
  
 	 # Division of the cycles by modality
-	 >>> muscles = CIMAP.modalitydivision(s,muscles)
+	 >>> muscles = CIMAP.modality_division(s,muscles)
 	 Cycles successfully divided into modalities
 
 
@@ -102,7 +102,7 @@ Agglomerative Hierarchical Clustering
  .. code-block:: python
  
  	 # Dendrogram representation
-	 >>> CIMAP.dendroplot(muscles,target = 'LGS')
+	 >>> CIMAP.dendro_plot(muscles,target = 'LGS')
 	 
 	 # Command to display all open figures
 	 >>> plt.show(block = False)
@@ -121,11 +121,11 @@ The :func:`~CIMAP.clustersplot` function, instead, can be used to show the origi
  .. code-block:: Python
  
 	 # Obtain the output of the algorithm
-	 >>> cimap_out = CIMAP.algorithm_output(s,muscles)
+	 >>> cimap_output = CIMAP.algorithm_output(s,muscles)
 	 Output dictionary created
 	 
 	 # Plot muscle activation intervals grouped in clusters and divided by modality
- 	 >>> CIMAP.clustersplot(cimap_out,target = 'LGS', color = True)
+ 	 >>> CIMAP.clusters_plot(cimap_output,target = 'LGS', color = True)
 	 
 	 # Command to display all open figures
 	 >>> plt.show(block = False)
@@ -146,7 +146,7 @@ Data saving
  .. code-block:: python
  
 	 # Save clustering results
-	 >>> CIMAP.resultsaver(cimap_out)
+	 >>> CIMAP.result_saver(cimap_output)
 	 Please insert the name of the file containing the results: results_file
 	 Results saved
 

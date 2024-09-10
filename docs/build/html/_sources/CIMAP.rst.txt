@@ -22,12 +22,12 @@ Here are presented all the functions that are given to apply the algorithm to a 
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: CIMAP.removeaddints
+.. automodule:: CIMAP.remove_add_ints
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: CIMAP.modalitydivision
+.. automodule:: CIMAP.modality_division
    :members:
    :undoc-members:
    :show-inheritance:
@@ -42,7 +42,7 @@ Here are presented all the functions that are given to apply the algorithm to a 
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: CIMAP.findcuts
+.. automodule:: CIMAP.find_cuts
    :members:
    :undoc-members:
    :show-inheritance:
@@ -52,12 +52,12 @@ Here are presented all the functions that are given to apply the algorithm to a 
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: CIMAP.resultsaver
+.. automodule:: CIMAP.result_saver
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: CIMAP.actplot
+.. automodule:: CIMAP.act_plot
    :members:
    :undoc-members:
    :show-inheritance:
@@ -67,12 +67,12 @@ Here are presented all the functions that are given to apply the algorithm to a 
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: CIMAP.dendroplot
+.. automodule:: CIMAP.dendro_plot
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: CIMAP.clustersplot
+.. automodule:: CIMAP.clusters_plot
    :members:
    :undoc-members:
    :show-inheritance:

@@ -3,7 +3,7 @@ import warnings
 from .intervals import intervals
 
 warnings.simplefilter("ignore", category=RuntimeWarning)
-warnings.simplefilter("ignore", category=np.VisibleDeprecationWarning)
+warnings.simplefilter("ignore", category=UserWarning)
 
 __all__ = ['removeaddints']
 

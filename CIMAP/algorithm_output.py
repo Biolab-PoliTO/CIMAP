@@ -9,7 +9,7 @@ def algorithm_output(s,muscles):
     
     :Input: * **s** (*dict*): the dictionary containing the cycles activation data created by the Input function from the *.csv* file.
             * **muscles** (*dict*): output dictionary from the "CIMAP_cuts" function containing the results of the clustering on the ciclical activation intervals
-    :Output: * **cimap_out** (*dict*): dictionary that contains the results of clustering divided for each individual muscle given as input with the removal of the non significant cluster'''
+    :Output: * **cimap_output** (*dict*): dictionary that contains the results of clustering divided for each individual muscle given as input with the removal of the non significant cluster'''
 
     labels = []
     clustering = []
@@ -93,10 +93,10 @@ def algorithm_output(s,muscles):
             else:
                 non_significant.append(np.array([ns,[]]))
             labels.append(lb)
-    cimap_out = {
+    cimap_output = {
            "name": labels,
             "clusters": clustering,
             "non_significant":non_significant        
        }
     print("Output dictionary created")
-    return cimap_out
+    return cimap_output

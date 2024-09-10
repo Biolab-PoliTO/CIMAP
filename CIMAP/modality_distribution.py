@@ -1,4 +1,4 @@
-from .targetgraph import targetgraph
+from .get_target_graph import get_target_graph
 from .intervals import intervals
 
 import warnings
@@ -33,7 +33,7 @@ def modality_distribution(s,target = 'All'):
         s["Labels"] = s.pop("labels")
         warnings.warn(' "Labels" field format wrong, corrected')
     
-    toplot = targetgraph(s,target)    
+    toplot = get_target_graph(s,target)    
     for i,cycles in enumerate(toplot["Cycles"]):
         plt.figure()
         _,nact,_ = intervals(cycles)

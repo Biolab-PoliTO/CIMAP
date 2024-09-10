@@ -4,7 +4,7 @@ from .utils import csv2dict
 import csv
 
 warnings.simplefilter("ignore", category=RuntimeWarning)
-warnings.simplefilter("ignore", category=np.VisibleDeprecationWarning)
+warnings.simplefilter("ignore", category=UserWarning)
 
 __all__ = ['data_reading']
 

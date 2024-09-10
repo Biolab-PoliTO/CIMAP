@@ -1,25 +1,26 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Algorithm functions &mdash; CIMAP Algorithm 1.0.4 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
+  <title>Algorithm functions &mdash; CIMAP Algorithm 1.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/my_theme.css?v=8ee1f8c2" />
+
+  
     <link rel="shortcut icon" href="_static/politologo.png"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=58fbf978"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -33,12 +34,16 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html">
-            <img src="_static/Logo.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/Logo.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -72,7 +77,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Algorithm functions</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -82,49 +87,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<section id="algorithm-functions">
-<h1>Algorithm functions<a class="headerlink" href="#algorithm-functions" title="Permalink to this heading"></a></h1>
+  <section id="algorithm-functions">
+<h1>Algorithm functions<a class="headerlink" href="#algorithm-functions" title="Link to this heading"></a></h1>
 <p>This section contains all the functions that are used to perform CIMAP with the description of the expected inputs and outputs.
 Here are presented all the functions that are given to apply the algorithm to a dataset. There are two possile way to apply the algorithm:</p>
 <ol class="arabic simple">
 <li><p>The function <strong>run_algorithm</strong> that automatically runs all the functions requesting the user to select the input file where the data is stored.</p></li>
 <li><p>Use the other functions sequentially as explained in the <a class="reference internal" href="example.html"><span class="doc">CIMAP Application Example</span></a> section, where is shown the sequential application of the functions for obtaining the results of CIMAP application.</p></li>
 </ol>
-<span class="target" id="module-CIMAP.run_algorithm"></span><dl class="py function">
+<dl class="py function" id="module-CIMAP.run_algorithm">
 <dt class="sig sig-object py" id="CIMAP.run_algorithm.run_algorithm">
-<span class="sig-name descname"><span class="pre">run_algorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/run_algorithm.html#run_algorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.run_algorithm.run_algorithm" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">run_algorithm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/run_algorithm.html#run_algorithm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.run_algorithm.run_algorithm" title="Link to this definition"></a></dt>
 <dd><p>Function for the application of CIMAP to a dataset. This function when used applies all the methods of the algorithm to the data in the <em>input_file</em>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_file</strong> (<em>string</em>): None (<em>default</em>), a string containing the path of the <em>.csv</em> file that contains the input data for the application of CIMAP. In case no input_file is given the system opens a window that allows the user to search and select manually the file to use as input.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Output</dt>
+<dt class="field-even">Output<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>output_file</strong>: the method automatically generates a <em>.csv</em> file in the same position of the input file containing the results of the application of the CIMAP. Refer to the <strong>Data Requirements</strong> section of the documentation for the detail on the output format of the data.</p></li>
 <li><p><strong>graphics</strong>:  all the graphs related to the CIMAP Algorithm application are given as output to the user.</p></li>
@@ -133,18 +114,18 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.intervals"></span><dl class="py function">
+<dl class="py function" id="module-CIMAP.intervals">
 <dt class="sig sig-object py" id="CIMAP.intervals.intervals">
-<span class="sig-name descname"><span class="pre">intervals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cycles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/intervals.html#intervals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.intervals.intervals" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">intervals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cycles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/intervals.html#intervals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.intervals.intervals" title="Link to this definition"></a></dt>
 <dd><p>Function for the extraction of the percentage value related to the activation intervals starting and ending point. This function is used in the pre-processing of the data for the extraction of the information necessary for the subsequent clustering steps. Also, the function returns the number of activation intervals in the cycle and the row where the cycle is put inside the “cycles” matrix. The row is used to mantain the sequence information of the cycles.</p>
 <blockquote>
 <div><dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cycles</strong> (<em>numpyarray</em>): a numpy binary array whose rows represents the gait cycles and the columns represent the samples of the normalised cycle. It is important that the cycles are normalised all at the same value, in our case 1000 time samples.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Output</dt>
+<dt class="field-even">Output<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>out</strong> (<em>list</em>): a list containing numpy arrays which contain the percentage value of the starting and ending point of the activation intervals (e.g., out[n] = [ON1,OFF1,…,ONn, OFFm])</p></li>
 <li><p><strong>num</strong> (<em>numpyarray</em>): a numpy array that contains the number of activation intervals of the activation interval stored in <strong>out</strong></p></li>
@@ -155,17 +136,17 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </div></blockquote>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.data_reading"></span><dl class="py function">
+<dl class="py function" id="module-CIMAP.data_reading">
 <dt class="sig sig-object py" id="CIMAP.data_reading.data_reading">
-<span class="sig-name descname"><span class="pre">data_reading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/data_reading.html#data_reading"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.data_reading.data_reading" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">data_reading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/data_reading.html#data_reading"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.data_reading.data_reading" title="Link to this definition"></a></dt>
 <dd><p>Function that takes the input of CIMAP and prepares the data structures for the application of CIMAP Algorithm.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>input_file</strong> (<em>string</em>): a string containing the path of the <em>.csv</em> file that contains the input data for the application of CIMAP. Be sure that the input data respects the requirements set in the Data Requirements section of the documentation.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Output</dt>
+<dt class="field-even">Output<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>s</strong> (<em>dict</em>): data structure of CIMAP that is used for the application of the methods of the algorithm.</p></li>
 <li><p><strong>muscles</strong> (<em>dict</em>): dictionary containing the information about the data that is given as input to CIMAP. Specifically the muscles, if the acquisition is bilateral and the position where to retrieve the cycles.</p></li>
@@ -174,17 +155,17 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.removeaddints"></span><dl class="py function">
-<dt class="sig sig-object py" id="CIMAP.removeaddints.removeaddints">
-<span class="sig-name descname"><span class="pre">removeaddints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/removeaddints.html#removeaddints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.removeaddints.removeaddints" title="Permalink to this definition"></a></dt>
+<dl class="py function" id="module-CIMAP.remove_add_ints">
+<dt class="sig sig-object py" id="CIMAP.remove_add_ints.remove_add_ints">
+<span class="sig-name descname"><span class="pre">remove_add_ints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/remove_add_ints.html#remove_add_ints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.remove_add_ints.remove_add_ints" title="Link to this definition"></a></dt>
 <dd><p>Function for the identification and removal of full active, full non-active cycles as this cycles are identified as outliers. The function also removes the activation intervals and small gaps that are smaller than 3% of the cycles as it was demonstrated in  <a class="reference external" href="https://doi.org/10.1109/10.661154">[1]</a> that such length in the activation is ininfluent on the biomechanics of the task and so they represent noise.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>s</strong> (<em>dict</em>): the dictionary containing the cycles activation data created by the Input function from the <em>.csv</em> file.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Output</dt>
+<dt class="field-even">Output<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>s</strong> (<em>dict</em>): same as the dictionary in input modified with the removal of the small gaps and of the always on/off cycles.</p></li>
 </ul>
@@ -192,18 +173,18 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.modalitydivision"></span><dl class="py function">
-<dt class="sig sig-object py" id="CIMAP.modalitydivision.modalitydivision">
-<span class="sig-name descname"><span class="pre">modalitydivision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">muscles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/modalitydivision.html#modalitydivision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.modalitydivision.modalitydivision" title="Permalink to this definition"></a></dt>
+<dl class="py function" id="module-CIMAP.modality_division">
+<dt class="sig sig-object py" id="CIMAP.modality_division.modality_division">
+<span class="sig-name descname"><span class="pre">modality_division</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">muscles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/modality_division.html#modality_division"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.modality_division.modality_division" title="Link to this definition"></a></dt>
 <dd><p>Function for the division of the gait cycles in the different modalities before clustering. The function uses the function intervals to retrieve the activation intervals and then it divides them inside a list in muscles where the index identifies the number of activation intervals of the modality (0 always empty).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>s</strong> (<em>dict</em>): the dictionary containing the cycles activation data created by the Input function from the <em>.csv</em> file.</p></li>
 <li><p><strong>muscles</strong> (<em>dict</em>): dictionary obtained as output of CIMAP_input.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Output</dt>
+<dt class="field-even">Output<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>muscles</strong> (<em>dict</em>): dictionary that contains the cycles divided by modality represented by the value of edges of the activation intervals translated as percentage of the cycle values.</p></li>
 </ul>
@@ -211,17 +192,17 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.dendrograms"></span><dl class="py function">
+<dl class="py function" id="module-CIMAP.dendrograms">
 <dt class="sig sig-object py" id="CIMAP.dendrograms.dendrograms">
-<span class="sig-name descname"><span class="pre">dendrograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">muscles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/dendrograms.html#dendrograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.dendrograms.dendrograms" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dendrograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">muscles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/dendrograms.html#dendrograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.dendrograms.dendrograms" title="Link to this definition"></a></dt>
 <dd><p>Function for building of the dendrograms with the L1 and L infinite metrics for the clustering process <a class="reference external" href="https://doi.org/10.1109/EMBC.2017.8036762">[2]</a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>muscles</strong> (<em>dict</em>): the dictionary containing the cycles divided by modality got as output from the modality division function.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Output</dt>
+<dt class="field-even">Output<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>muscles</strong> (<em>dict</em>): dictionary containing the dendrograms built from the cycles divided in modalities</p></li>
 </ul>
@@ -229,17 +210,17 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.cuts"></span><dl class="py function">
+<dl class="py function" id="module-CIMAP.cuts">
 <dt class="sig sig-object py" id="CIMAP.cuts.cuts">
-<span class="sig-name descname"><span class="pre">cuts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">muscles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/cuts.html#cuts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.cuts.cuts" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">cuts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">muscles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/cuts.html#cuts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.cuts.cuts" title="Link to this definition"></a></dt>
 <dd><p>Function for the identification of the optimal cut among the three different automatic cuts performed on the dendrograms based on distance <a class="reference external" href="https://doi.org/10.1109/EMBC.2017.8036762">[2]</a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>muscles</strong> (<em>dict</em>): the dictionary containing the cycles divided by modality, and the dendrgrams got as output from the CIMAP_dendrograms function.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Output</dt>
+<dt class="field-even">Output<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>muscles</strong> (<em>dict</em>): dictionary containing the best clustering obtained for each muscle and modality.</p></li>
 </ul>
@@ -247,17 +228,17 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.findcuts"></span><dl class="py function">
-<dt class="sig sig-object py" id="CIMAP.findcuts.findcuts">
-<span class="sig-name descname"><span class="pre">findcuts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/findcuts.html#findcuts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.findcuts.findcuts" title="Permalink to this definition"></a></dt>
+<dl class="py function" id="module-CIMAP.find_cuts">
+<dt class="sig sig-object py" id="CIMAP.find_cuts.find_cuts">
+<span class="sig-name descname"><span class="pre">find_cuts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/find_cuts.html#find_cuts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.find_cuts.find_cuts" title="Link to this definition"></a></dt>
 <dd><p>Function for the automatic identification of the cutting point on the dendrograms <a class="reference external" href="https://doi.org/10.1109/10.661154">[1]</a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>distance</strong> (<em>numpyarray</em>): the distance array that is the third column of the linkage function output.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Output</dt>
+<dt class="field-even">Output<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>cuts</strong> (<em>list</em>): list containing the optimal cutting point for each type of cut used.</p></li>
 </ul>
@@ -265,38 +246,38 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.algorithm_output"></span><dl class="py function">
+<dl class="py function" id="module-CIMAP.algorithm_output">
 <dt class="sig sig-object py" id="CIMAP.algorithm_output.algorithm_output">
-<span class="sig-name descname"><span class="pre">algorithm_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">muscles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/algorithm_output.html#algorithm_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.algorithm_output.algorithm_output" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">algorithm_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">muscles</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/algorithm_output.html#algorithm_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.algorithm_output.algorithm_output" title="Link to this definition"></a></dt>
 <dd><p>Function for the creation of the output of the algorithm. The output structure of this function is used for the clusterplot graphical function for the representation of the results of clustering.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>s</strong> (<em>dict</em>): the dictionary containing the cycles activation data created by the Input function from the <em>.csv</em> file.</p></li>
 <li><p><strong>muscles</strong> (<em>dict</em>): output dictionary from the “CIMAP_cuts” function containing the results of the clustering on the ciclical activation intervals</p></li>
 </ul>
 </dd>
-<dt class="field-even">Output</dt>
+<dt class="field-even">Output<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>cimap_out</strong> (<em>dict</em>): dictionary that contains the results of clustering divided for each individual muscle given as input with the removal of the non significant cluster</p></li>
+<li><p><strong>cimap_output</strong> (<em>dict</em>): dictionary that contains the results of clustering divided for each individual muscle given as input with the removal of the non significant cluster</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.resultsaver"></span><dl class="py function">
-<dt class="sig sig-object py" id="CIMAP.resultsaver.resultsaver">
-<span class="sig-name descname"><span class="pre">resultsaver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cimap_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saving</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/resultsaver.html#resultsaver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.resultsaver.resultsaver" title="Permalink to this definition"></a></dt>
+<dl class="py function" id="module-CIMAP.result_saver">
+<dt class="sig sig-object py" id="CIMAP.result_saver.result_saver">
+<span class="sig-name descname"><span class="pre">result_saver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cimap_output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saving</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/result_saver.html#result_saver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.result_saver.result_saver" title="Link to this definition"></a></dt>
 <dd><p>Function for saving the results of CIMAP in a <em>.csv</em> file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cimap_out</strong> (<em>dict</em>): the dictionary containing the results of the application of CIMAP obtained from the function algorithm_output.</p></li>
+<li><p><strong>cimap_output</strong> (<em>dict</em>): the dictionary containing the results of the application of CIMAP obtained from the function algorithm_output.</p></li>
 <li><p><strong>input_file</strong> (<em>string</em>): the path of the input file containing the data given to CIMAP. When set to <em>None</em> the function gives the opportunity to choose the folder where to save the data and input manually the name to give to the file.</p></li>
 <li><p><strong>saving</strong> (<em>bool</em>): a boolean variable that can be used to decide whether to save the results or not.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Output</dt>
+<dt class="field-even">Output<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>rows</strong> (<em>array</em>): array containing the results of the application of CIMAP.</p></li>
 </ul>
@@ -304,12 +285,12 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.actplot"></span><dl class="py function">
-<dt class="sig sig-object py" id="CIMAP.actplot.actplot">
-<span class="sig-name descname"><span class="pre">actplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'All'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/actplot.html#actplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.actplot.actplot" title="Permalink to this definition"></a></dt>
+<dl class="py function" id="module-CIMAP.act_plot">
+<dt class="sig sig-object py" id="CIMAP.act_plot.act_plot">
+<span class="sig-name descname"><span class="pre">act_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'All'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/act_plot.html#act_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.act_plot.act_plot" title="Link to this definition"></a></dt>
 <dd><p>Function for plotting all the cycles and the activation before the application of CIMAP</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>s</strong> (<em>dict</em>): the dictionary containing the cycles activation data created by the Input function from the <em>.csv</em> file.</p></li>
 <li><p><strong>target</strong>: “All” (<em>default</em>), labels or portion of the label of the muscle that you want to plot. For example if LGS_R and LGS_L are available inserting the target “LGS” would plot both. Inserting the exact label give as output the graphs related to that label.</p></li>
@@ -318,12 +299,12 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.modality_distribution"></span><dl class="py function">
+<dl class="py function" id="module-CIMAP.modality_distribution">
 <dt class="sig sig-object py" id="CIMAP.modality_distribution.modality_distribution">
-<span class="sig-name descname"><span class="pre">modality_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'All'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/modality_distribution.html#modality_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.modality_distribution.modality_distribution" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">modality_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'All'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/modality_distribution.html#modality_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.modality_distribution.modality_distribution" title="Link to this definition"></a></dt>
 <dd><p>Method for the graphical representation of the distribution of the cycles into the modalities.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>s</strong> (<em>dict</em>): the dictionary containing the cycles activation data created by the Input function from the <em>.csv</em> file.</p></li>
 <li><p><strong>target</strong>: “All” (<em>default</em>), labels or portion of the label of the muscle that you want to plot. For example if LGS_R and LGS_L are available inserting the target “LGS” would plot both. Inserting the exact label give as output the graphs related to that label.</p></li>
@@ -332,12 +313,12 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.dendroplot"></span><dl class="py function">
-<dt class="sig sig-object py" id="CIMAP.dendroplot.dendroplot">
-<span class="sig-name descname"><span class="pre">dendroplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">muscles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'All'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/dendroplot.html#dendroplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.dendroplot.dendroplot" title="Permalink to this definition"></a></dt>
+<dl class="py function" id="module-CIMAP.dendro_plot">
+<dt class="sig sig-object py" id="CIMAP.dendro_plot.dendro_plot">
+<span class="sig-name descname"><span class="pre">dendro_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">muscles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'All'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/dendro_plot.html#dendro_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.dendro_plot.dendro_plot" title="Link to this definition"></a></dt>
 <dd><p>Method for plotting the dendrograms built with CIMAP and chosen after performing the clustering process.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>muscles</strong> (<em>dict</em>): the dictionary obtained as output from the CIMAP_cuts function.</p></li>
 <li><p><strong>target</strong>: “All” (<em>default</em>), labels or portion of the label of the muscle that you want to plot. For example if LGS_R and LGS_L are available inserting the target “LGS” would plot both. Inserting the exact label give as output the graphs related to that label.</p></li>
@@ -346,14 +327,14 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dl>
 </dd></dl>
 
-<span class="target" id="module-CIMAP.clustersplot"></span><dl class="py function">
-<dt class="sig sig-object py" id="CIMAP.clustersplot.clustersplot">
-<span class="sig-name descname"><span class="pre">clustersplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cimap_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'All'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/clustersplot.html#clustersplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.clustersplot.clustersplot" title="Permalink to this definition"></a></dt>
+<dl class="py function" id="module-CIMAP.clusters_plot">
+<dt class="sig sig-object py" id="CIMAP.clusters_plot.clusters_plot">
+<span class="sig-name descname"><span class="pre">clusters_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cimap_output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'All'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CIMAP/clusters_plot.html#clusters_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CIMAP.clusters_plot.clusters_plot" title="Link to this definition"></a></dt>
 <dd><p>Method for the visualization of the clustering results of CIMAP.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Input</dt>
+<dt class="field-odd">Input<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cimap_out</strong> (<em>dict</em>): the dictionary obtained as output from the CIMAP_output function.</p></li>
+<li><p><strong>cimap_output</strong> (<em>dict</em>): the dictionary obtained as output from the cimap_outputput function.</p></li>
 <li><p><strong>target</strong>: “All” (<em>default</em>), labels or portion of the label of the muscle that you want to plot. For example if LGS_R and LGS_L are available inserting the target “LGS” would plot both. Inserting the exact label give as output the graphs related to that label.</p></li>
 <li><p><strong>color</strong> (<em>boolean</em>): False (<em>default</em>), parameter to set the color of the clusters matching.</p></li>
 </ul>
@@ -362,7 +343,7 @@ Here are presented all the functions that are given to apply the algorithm to a 
 </dd></dl>
 
 <section id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this heading"></a></h2>
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
 <p><a class="reference external" href="https://doi.org/10.1109/10.661154">[1]</a>. P. Bonato, T. D’Alessio and M. Knaflitz, A statistical method for the measurement of muscle activation intervals from surface myoelectric signal during gait. IEEE Transactions on Biomedical Engineering.</p>
 <p><a class="reference external" href="https://doi.org/10.1109/EMBC.2017.8036762">[2]</a>. S. Rosati, C. Castagneri, V. Agostini, M. Knaflitz, and G. Balestra, Muscle contractions in cyclic movements: Optimization of CIMAP algorithm, 2017, doi: 10.1109/EMBC.2017.8036762.</p>
 <blockquote>

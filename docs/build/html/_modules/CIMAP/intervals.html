@@ -1,24 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CIMAP.intervals &mdash; CIMAP Algorithm 1.0.4 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../_static/my_theme.css?v=8ee1f8c2" />
+
+  
     <link rel="shortcut icon" href="../../_static/politologo.png"/>
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=71272d9f"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -30,12 +31,16 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html">
-            <img src="../../_static/Logo.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/Logo.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -69,7 +74,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">CIMAP.intervals</li>
       <li class="wy-breadcrumbs-aside">
@@ -85,12 +90,14 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
-<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">UserWarning</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;intervals&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="intervals"><a class="viewcode-back" href="../../CIMAP.html#CIMAP.intervals.intervals">[docs]</a><span class="k">def</span> <span class="nf">intervals</span><span class="p">(</span><span class="n">cycles</span><span class="p">):</span>
-     <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="intervals">
+<a class="viewcode-back" href="../../CIMAP.html#CIMAP.intervals.intervals">[docs]</a>
+<span class="k">def</span> <span class="nf">intervals</span><span class="p">(</span><span class="n">cycles</span><span class="p">):</span>
+<span class="w">     </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">     Function for the extraction of the percentage value related to the activation intervals starting and ending point. This function is used in the pre-processing of the data for the extraction of the information necessary for the subsequent clustering steps. Also, the function returns the number of activation intervals in the cycle and the row where the cycle is put inside the &quot;cycles&quot; matrix. The row is used to mantain the sequence information of the cycles. </span>
 
 <span class="sd">      :Input: * **cycles** (*numpyarray*): a numpy binary array whose rows represents the gait cycles and the columns represent the samples of the normalised cycle. It is important that the cycles are normalised all at the same value, in our case 1000 time samples.</span>
@@ -108,7 +115,7 @@
          <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong cycles format, must be an array of 2 dimensions&#39;</span><span class="p">)</span>
         
         <span class="c1"># check whether the activation values are binary</span>
-     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">cycles</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">cycles</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">cycles</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cycles</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
          <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s1">&#39;Wrong Activation values&#39;</span><span class="p">)</span>
     
         <span class="c1"># identificattion of the transitions</span>
@@ -147,6 +154,7 @@
      <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">cycles</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span>
      
      <span class="k">return</span> <span class="n">out</span><span class="p">,</span><span class="n">num</span><span class="p">,</span><span class="n">idx</span></div>
+
 </pre></div>
 
            </div>

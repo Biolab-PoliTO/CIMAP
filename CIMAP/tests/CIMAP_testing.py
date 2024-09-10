@@ -32,9 +32,9 @@ class TestCIMAPOutput(unittest.TestCase):
         file.close()
         input_file = ".\\test_data\\Dataset.csv"
         self.s, self.muscles = CIMAP.data_reading(input_file=input_file)
-        self.s = CIMAP.removeaddints(self.s)
+        self.s = CIMAP.remove_add_ints(self.s)
         #division in modalities
-        self.muscles = CIMAP.modalitydivision(self.s, self.muscles)
+        self.muscles = CIMAP.modality_division(self.s, self.muscles)
         # construction of the dendrograms
         self.muscles = CIMAP.dendrograms(self.muscles)
         # cut of the dendrogram and choice of the best clustering
@@ -42,7 +42,7 @@ class TestCIMAPOutput(unittest.TestCase):
         # output of the CIMAP
         self.cimap_out = CIMAP.algorithm_output(self.s, self.muscles)
         # save of the output file
-        outrows = CIMAP.resultsaver(cimap_out, input_file, saving=False)
+        outrows = CIMAP.result_saver(self.cimap_out, input_file, saving=False)
         self.assertEqual(np.shape(outrows), np.shape(rows))
         for outrow in outrows:
             for row in rows:
