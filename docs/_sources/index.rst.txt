@@ -86,7 +86,9 @@ An application example is available in the :doc:`Applying CIMAP to gait analysis
 Cite CIMAP algorithm
 --------------------
 
-If you are using the CIMAP algorithm in your study, please cite the following two articles by *Rosati et al.*  `[2]`_, `[3]`_.
+If you are using the CIMAP algorithm in your study, please cite the following article by *Dotti et al.*  `[7]`_.
+
+.. _[7]: https://doi.org/10.1088/1361-6579/ad814f
 
 How to contribute
 -----------------
@@ -107,6 +109,8 @@ References
 `[5]`_. G. Dotti, M. Ghislieri, S. Rosati, V. Agostini, M. Knaflitz, G. Balestra, (2021, November). The Effect of Number of Gait Cycles on Principal Activation Extraction. In Annual International Conference of the IEEE Engineering in Medicine and Biology Society. IEEE Engineering in Medicine and Biology Society. Annual International Conference (Vol. 2021, pp. 985-988).
 
 `[6]`_. L. Kaufman and P. J. Rousseeuw, Finding groups in data : an introduction to cluster analysis. Wiley, 2005.
+
+`[7]`_. G. Dotti, M. Ghislieri, C. Castagneri, V. Agostini, M. Knaflitz, G. Balestra, and S. Rosati, "An Open-Source Toolbox for Enhancing the Assessment of Muscle Activation Patterns during Cyclical Movements", Physiol. Meas. 2024, 45, 105004, doi:10.1088/1361-6579/ad814f.
 
 .. toctree:: :titlesonly:
    :maxdepth: 2
