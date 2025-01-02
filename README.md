@@ -37,11 +37,9 @@ A detailed description of all the functions developed for performing CIMAP is av
 A comprehensive application example is provided in the [Documentation](https://biolab-polito.github.io/CIMAP/index.html) page in the [Applying CIMAP to gait analysis](https://biolab-polito.github.io/CIMAP/example.html) section. The dataset on which ```CIMAP``` is applied is the same that is provided in the example_data folder. Following the same steps showed in the example section of the [Documentation](https://biolab-polito.github.io/CIMAP/index.html) it is possible to apply ```CIMAP``` to other datasets.
 
 ## References
-If you use ```CIMAP``` algorithm in your work, please cite the following two articles:
+If you use ```CIMAP``` algorithm in your work, please cite the following article:
 
-- S. Rosati, V. Agostini, M. Knaflitz, and G. Balestra, “Muscle activation patterns during gait: A hierarchical clustering analysis,” Biomed. Signal Process. Control, vol. 31, pp. 463–469, 2017, doi: [10.1016/j.bspc.2016.09.017](https://doi.org/10.1016/j.bspc.2016.09.017).
-
-- S. Rosati, C. Castagneri, V. Agostini, M. Knaflitz, and G. Balestra, “Muscle contractions in cyclic movements: Optimization of CIMAP algorithm,” 2017, doi: [10.1109/EMBC.2017.8036762](https://doi.org/10.1109/EMBC.2017.8036762).
+- G. Dotti, M. Ghislieri, C. Castagneri, V. Agostini, M. Knaflitz, G. Balestra, and S. Rosati, "An Open-Source Toolbox for Enhancing the Assessment of Muscle Activation Patterns during Cyclical Movements",  Physiol. Meas. 2024, 45, 105004, doi:[10.1088/1361-6579/ad814f](https://doi.org/10.1088/1361-6579/ad814f).
 
 
 ## How to contribute to ``CIMAP``
